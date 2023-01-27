@@ -24,6 +24,10 @@ public class Usuario {
     @Column(unique = true)
     private String email;
     private Integer semestre;
+    private String whatsapp;
+    private String instagram;
+    private String linkedin;
+    private String facebook;
     @ManyToOne
     @JoinColumn(name = "curso_id")
     //    @ToString.Exclude
@@ -32,8 +36,5 @@ public class Usuario {
     @OneToMany(mappedBy = "usuario")
     @JsonIgnore
     private List<Tema> temas;
-
-//    @OneToMany(mappedBy = "usuario")
-//    private List<Loja> lojas;
 
 }

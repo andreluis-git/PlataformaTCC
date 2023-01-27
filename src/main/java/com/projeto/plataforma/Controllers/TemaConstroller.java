@@ -52,8 +52,7 @@ public class TemaConstroller {
         }
         Tema tema = optTema.get();
 
-//        Usuario usuario = usuarioRepository.getById(currentUser.getCurrentUser(headers).getId());
-        Usuario usuario = usuarioRepository.getById(1L);
+        Usuario usuario = usuarioRepository.getById(currentUser.getCurrentUser(headers).getId());
 
         if(tema.getUsuario() == usuario) {
             tema.setExcluido(true);

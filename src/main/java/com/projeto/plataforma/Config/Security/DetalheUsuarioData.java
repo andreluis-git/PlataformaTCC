@@ -1,4 +1,4 @@
-package com.projeto.plataforma.config.security;
+package com.projeto.plataforma.Config.Security;
 
 import com.projeto.plataforma.Model.Usuario;
 import org.springframework.security.core.GrantedAuthority;

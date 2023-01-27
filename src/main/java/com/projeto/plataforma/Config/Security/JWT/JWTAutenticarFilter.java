@@ -1,8 +1,8 @@
-package com.projeto.plataforma.config.security.jwt;
+package com.projeto.plataforma.Config.Security.JWT;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.projeto.plataforma.config.security.DetalheUsuarioData;
+import com.projeto.plataforma.Config.Security.DetalheUsuarioData;
 import com.projeto.plataforma.Model.Usuario;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.security.authentication.AuthenticationManager;

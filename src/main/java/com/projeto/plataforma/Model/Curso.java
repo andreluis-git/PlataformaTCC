@@ -32,4 +32,7 @@ public class Curso {
     @OneToMany(mappedBy = "cursoDisciplina")
     @JsonIgnore
     private List<Disciplina> disciplinas;
+    @OneToMany(mappedBy = "cursoPeriodo")
+    @JsonIgnore
+    private List<Periodo> periodos;
 }

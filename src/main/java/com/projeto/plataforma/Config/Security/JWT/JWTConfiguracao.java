@@ -1,6 +1,6 @@
-package com.projeto.plataforma.config.security.jwt;
+package com.projeto.plataforma.Config.Security.JWT;
 
-import com.projeto.plataforma.config.security.DetalheUsuarioServiceImpl;
+import com.projeto.plataforma.Config.Security.DetalheUsuarioServiceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
