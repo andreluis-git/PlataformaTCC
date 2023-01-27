@@ -1,0 +1,24 @@
+{
+  "usuarios": [
+    {
+      "login": "aluno",
+      "senha": "$2a$10$sQnC73si3NoOPV4iSJX0EOmhcVUvIgotrcd17D0xpbR4PfkJYCptu",
+      "email": "aluno@email.com",
+      "semestre": 1,
+      "curso": 1
+    },
+    {
+      "login": "aluno2",
+      "senha": "$2a$10$sQnC73si3NoOPV4iSJX0EOmhcVUvIgotrcd17D0xpbR4PfkJYCptu",
+      "email": "aluno2@email.com",
+      "semestre": 2,
+      "curso": 1
+    }
+  ],
+  "cursos": [
+    {
+      "nome": "Analise e desenvolvimento de sistemas",
+      "sigla": "ADS"
+    }
+  ]
+}

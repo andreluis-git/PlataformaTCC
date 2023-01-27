@@ -6,6 +6,7 @@ import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Getter
@@ -29,10 +30,18 @@ public class Tema {
         joinColumns = @JoinColumn(name = "tema_id"),
         inverseJoinColumns = @JoinColumn(name = "disciplina_id"))
 //    @ToString.Exclude
-    private List<Disciplina> disciplinasList;
+    @NotNull
+    private List<Disciplina> disciplinas;
 
     @ManyToOne
-    @JoinColumn(name = "usuario_id", nullable = false)
+    @JoinColumn(name = "usuario_id")
 //    @ToString.Exclude
+    @NotNull
     private Usuario usuario;
+    @ManyToOne
+    @JoinColumn(name = "curso_id")
+//    @ToString.Exclude
+    @NotNull
+    private Curso cursoTema;
+
 }

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Getter
@@ -22,10 +23,15 @@ public class Usuario {
     private String password;
     @Column(unique = true)
     private String email;
-
+    private Integer semestre;
+    @ManyToOne
+    @JoinColumn(name = "curso_id")
+    //    @ToString.Exclude
+    @NotNull
+    private Curso cursoUsuario;
     @OneToMany(mappedBy = "usuario")
     @JsonIgnore
-    private List<Tema> temaList;
+    private List<Tema> temas;
 
 //    @OneToMany(mappedBy = "usuario")
 //    private List<Loja> lojas;

@@ -39,12 +39,12 @@ public class TemaConstroller {
         }
     }
 
-    @GetMapping("listarTemas")
+    @GetMapping("/listarTemas")
     public ResponseEntity<Object> listarTemas() {
         return ResponseEntity.ok(temaRepository.findAll());
     }
 
-    @PutMapping("deletarTema")
+    @PutMapping("/deletarTema")
     public ResponseEntity<Object> deletarTema(@RequestHeader HttpHeaders headers, @RequestParam Long id) {
         Optional<Tema> optTema = temaRepository.findById(id);
         if(optTema.isEmpty()) {
@@ -52,7 +52,8 @@ public class TemaConstroller {
         }
         Tema tema = optTema.get();
 
-        Usuario usuario = usuarioRepository.getById(currentUser.getCurrentUser(headers).getId());
+//        Usuario usuario = usuarioRepository.getById(currentUser.getCurrentUser(headers).getId());
+        Usuario usuario = usuarioRepository.getById(1L);
 
         if(tema.getUsuario() == usuario) {
             tema.setExcluido(true);

@@ -12,22 +12,17 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity(name="Disciplina")
-public class Disciplina {
+@Entity(name="Semestre")
+public class Semestre {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
-    private String sigla;
     private String nome;
-    @ManyToMany(mappedBy = "disciplinas")
-    @JsonIgnore
-    private List<Tema> temas;
-
     @ManyToOne
     @JoinColumn(name = "curso_id")
     //    @ToString.Exclude
     @NotNull
-    private Curso cursoDisciplina;
+    private Curso cursoSemestre;
 }
