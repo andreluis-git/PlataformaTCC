@@ -2,6 +2,7 @@ package com.projeto.plataforma.Controllers;
 
 import com.projeto.plataforma.Model.Usuario;
 import com.projeto.plataforma.Repository.UsuarioRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -11,16 +12,13 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("api/usuario")
+@RequestMapping("/usuario")
 public class UsuarioController {
 
-    private final UsuarioRepository usuarioRepository;
-    private final PasswordEncoder encoder;
-
-    public UsuarioController(UsuarioRepository usuarioRepository, PasswordEncoder encoder) {
-        this.usuarioRepository = usuarioRepository;
-        this.encoder = encoder;
-    }
+    @Autowired
+    private UsuarioRepository usuarioRepository;
+    @Autowired
+    private PasswordEncoder encoder;
 
 //    @GetMapping("/listar-todos")
     public ResponseEntity<List<Usuario>> listarTodos() {
@@ -28,7 +26,7 @@ public class UsuarioController {
         return ResponseEntity.ok(usuarioRepository.findAll());
     }
 
-    @PostMapping("/cadastrar_usuario")
+    @PostMapping("/cadastrarUsuario")
     public ResponseEntity<Object> cadastrarUsuario(@RequestBody Usuario usuario) {
 
         try {

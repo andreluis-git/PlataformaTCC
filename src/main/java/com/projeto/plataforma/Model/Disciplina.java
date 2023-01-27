@@ -1,33 +1,26 @@
 package com.projeto.plataforma.Model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.List;
 
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity(name="Usuario")
-public class Usuario {
+@Entity(name="Disciplina")
+public class Disciplina {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
-    @Column(unique = true)
-    private String login;
-    private String password;
-    @Column(unique = true)
-    private String email;
-
-    @OneToMany(mappedBy = "usuario")
+    private String sigla;
+    private String nome;
+    @ManyToMany(mappedBy = "disciplinasList")
     @JsonIgnore
     private List<Tema> temaList;
-
-//    @OneToMany(mappedBy = "usuario")
-//    private List<Loja> lojas;
-
 }

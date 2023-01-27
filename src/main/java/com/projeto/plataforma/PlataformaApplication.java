@@ -20,5 +20,5 @@ public class PlataformaApplication {
 		return new BCryptPasswordEncoder();
 	}
 
-	//Swagger http://localhost:8080/swagger-ui/index.html#/
+	//Swagger http://localhost:8080/api/swagger-ui/index.html#/
 }

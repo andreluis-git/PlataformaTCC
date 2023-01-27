@@ -34,10 +34,10 @@ public class JWTConfiguracao extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         final JWTAutenticarFilter auth = new JWTAutenticarFilter(authenticationManager());
-        auth.setFilterProcessesUrl("/api/login");
+        auth.setFilterProcessesUrl("/login");
 
         http.cors().configurationSource(corsConfigurationSource()).and().csrf().disable().authorizeRequests()
-                .antMatchers(HttpMethod.POST, "/login", "/api/usuario/cadastrar_usuario").permitAll()
+                .antMatchers(HttpMethod.POST, "/login", "/usuario/cadastrarUsuario").permitAll()
                 .antMatchers("/v2/api-docs", "/configuration/**", "/swagger*/**", "/webjars/**", "/api/adm/dados/*", "/api/user/**")
                 .permitAll()
                 .anyRequest().authenticated()
