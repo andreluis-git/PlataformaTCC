@@ -156,8 +156,8 @@ ALTER TABLE IF EXISTS public.usuario
 
 --senha = usuario
 INSERT INTO public.usuario(email, login, password, semestre, curso_id) VALUES
-('usuario@email.com', 'usuario', '$2a$10$sQnC73si3NoOPV4iSJX0EOmhcVUvIgotrcd17D0xpbR4PfkJYCptu', 1, 1),
-('usuario2@email.com', 'usuario2', '$2a$10$sQnC73si3NoOPV4iSJX0EOmhcVUvIgotrcd17D0xpbR4PfkJYCptu', 2, 1);
+('aluno@email.com', 'aluno', '$2a$10$sQnC73si3NoOPV4iSJX0EOmhcVUvIgotrcd17D0xpbR4PfkJYCptu', 1, 1),
+('aluno2@email.com', 'aluno2', '$2a$10$sQnC73si3NoOPV4iSJX0EOmhcVUvIgotrcd17D0xpbR4PfkJYCptu', 2, 1);
 
 end;
 
