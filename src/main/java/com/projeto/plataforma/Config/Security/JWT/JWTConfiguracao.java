@@ -1,6 +1,5 @@
 package com.projeto.plataforma.Config.Security.JWT;
 
-import com.projeto.plataforma.Config.Security.DetalheUsuarioServiceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -36,18 +35,10 @@ public class JWTConfiguracao extends WebSecurityConfigurerAdapter {
         final JWTAutenticarFilter auth = new JWTAutenticarFilter(authenticationManager());
         auth.setFilterProcessesUrl("/login");
 
-        http.cors().configurationSource(corsConfigurationSource()).and().csrf().disable().authorizeRequests()
-                .antMatchers(HttpMethod.POST, "/login",
-                        "/usuario/cadastrarUsuario",
-                        "/aluno/cadastrarAluno",
-                        "/curso/cadastrarCurso",
-                        "/curso/editarCurso",
-                        "/curso/deletarCurso",
-                        "/disciplina/cadastrarDisciplina",
-                        "/disciplina/editarDisciplina",
-                        "/disciplina/deletarDisciplina"
-                ).permitAll()
-                .antMatchers("/v2/api-docs", "/configuration/**", "/swagger*/**", "/webjars/**", "/api/adm/dados/*", "/api/user/**")
+        http.cors().configurationSource(corsConfigurationSource()).and().csrf().disable()
+                .authorizeRequests()
+                .antMatchers(HttpMethod.POST, "/login", "/instituicao/cadastrarInstituicao", "/usuario/cadastrarUsuario").permitAll()
+                .antMatchers("/v2/api-docs", "/configuration/**", "/swagger*/**", "/webjars/**", "/api/adm/dados/*", "/api/user/**", "/teste/**")
                 .permitAll()
                 .antMatchers("/**").permitAll() //REMOVER A PERMISSAO DEPOIS PARA VOLTAR A AUTENTICAR
                 .anyRequest().authenticated()

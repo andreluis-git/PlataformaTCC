@@ -2,10 +2,8 @@ package com.projeto.plataforma.Config.Security.JWT;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.projeto.plataforma.Config.Security.DetalheUsuarioData;
-import com.projeto.plataforma.Model.Aluno;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.projeto.plataforma.persistence.model.Usuario;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -37,11 +35,11 @@ public class JWTAutenticarFilter extends UsernamePasswordAuthenticationFilter {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             //objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
-            Aluno aluno = objectMapper.readValue(request.getInputStream(), Aluno.class);
+            Usuario usuario = objectMapper.readValue(request.getInputStream(), Usuario.class);
 
             return authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                    aluno.getEmail(),
-                    aluno.getPassword(),
+                    usuario.getEmail(),
+                    usuario.getPassword(),
                     new ArrayList<>()
             ));
         } catch (IOException e) {
