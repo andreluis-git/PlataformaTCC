@@ -1,10 +1,12 @@
 package com.projeto.plataforma.Controllers;
 
+import com.projeto.plataforma.Model.Aluno;
 import com.projeto.plataforma.Model.Tema;
-import com.projeto.plataforma.Model.Usuario;
+import com.projeto.plataforma.Repository.AlunoRepository;
 import com.projeto.plataforma.Repository.TemaRepository;
 import com.projeto.plataforma.Repository.UsuarioRepository;
 import com.projeto.plataforma.Utils.CurrentUser;
+import com.projeto.plataforma.Utils.ValidationUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -17,11 +19,13 @@ import java.util.Optional;
 public class TemaConstroller {
 
     @Autowired
-    private UsuarioRepository usuarioRepository;
+    private AlunoRepository alunoRepository;
     @Autowired
     private TemaRepository temaRepository;
     @Autowired
     private CurrentUser currentUser;
+    @Autowired
+    private ValidationUtils validationUtils;
 
     @PostMapping("/gravarTema")
     public ResponseEntity<Object> gravarTema(@RequestBody Tema tema) {
@@ -40,26 +44,23 @@ public class TemaConstroller {
     }
 
     @GetMapping("/listarTemas")
-    public ResponseEntity<Object> listarTemas() {
-        return ResponseEntity.ok(temaRepository.findAll());
-    }
+    public ResponseEntity<Object> listarTemas(@RequestHeader HttpHeaders headers) {
 
-    @PutMapping("/deletarTema")
-    public ResponseEntity<Object> deletarTema(@RequestHeader HttpHeaders headers, @RequestParam Long id) {
-        Optional<Tema> optTema = temaRepository.findById(id);
-        if(optTema.isEmpty()) {
+        try {
+            Aluno aluno = alunoRepository.getById(currentUser.getCurrentUser(headers).getId());
+
+            return ResponseEntity.ok(temaRepository.findByIdIn(aluno.getTemasAluno()));
+        }
+        catch (Exception ex) {
             return ResponseEntity.badRequest().build();
         }
-        Tema tema = optTema.get();
 
-        Usuario usuario = usuarioRepository.getById(currentUser.getCurrentUser(headers).getId());
+    }
 
-        if(tema.getUsuario() == usuario) {
-            tema.setExcluido(true);
-            temaRepository.save(tema);
-            return ResponseEntity.ok().build();
-        }
+    @DeleteMapping("/deletarTema")
+    public ResponseEntity<Object> deletarTema(@RequestHeader HttpHeaders headers, @RequestParam Long temaId) {
+        temaRepository.deleteById(temaId);
 
-        return ResponseEntity.badRequest().build();
+        return ResponseEntity.ok().build();
     }
 }

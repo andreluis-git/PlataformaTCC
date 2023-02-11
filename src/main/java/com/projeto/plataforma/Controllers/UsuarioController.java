@@ -8,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -19,12 +18,6 @@ public class UsuarioController {
     private UsuarioRepository usuarioRepository;
     @Autowired
     private PasswordEncoder encoder;
-
-//    @GetMapping("/listar-todos")
-    public ResponseEntity<List<Usuario>> listarTodos() {
-
-        return ResponseEntity.ok(usuarioRepository.findAll());
-    }
 
     @PostMapping("/cadastrarUsuario")
     public ResponseEntity<Object> cadastrarUsuario(@RequestBody Usuario usuario) {
@@ -41,7 +34,7 @@ public class UsuarioController {
 //    @GetMapping("/validar-senha")
     public ResponseEntity<Object> validarSenha(@RequestParam String login, @RequestParam String password) {
 
-        Optional<Usuario> usuarioOpt = usuarioRepository.findByLogin(login);
+        Optional<Usuario> usuarioOpt = usuarioRepository.findByEmail(login);
         if(!usuarioOpt.isPresent()) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(false);
         }

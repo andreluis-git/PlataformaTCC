@@ -28,7 +28,7 @@ public class DetalheUsuarioData implements UserDetails {
 
     @Override
     public String getUsername() {
-        return usuario.orElse(new Usuario()).getLogin();
+        return usuario.orElse(new Usuario()).getEmail();
     }
 
     @Override

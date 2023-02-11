@@ -1,7 +1,7 @@
 package com.projeto.plataforma.DTOs;
 
 
-import com.projeto.plataforma.Model.Usuario;
+import com.projeto.plataforma.Model.Aluno;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.modelmapper.ModelMapper;
@@ -15,7 +15,7 @@ public class SsoDTO {
 
     private String access_token;
     private String token_type;
-    private Usuario me;
+    private Aluno me;
 
     public String getAccess_token() {
         return access_token;
@@ -33,15 +33,15 @@ public class SsoDTO {
         this.token_type = token_type;
     }
 
-    public Usuario getMe() {
+    public Aluno getMe() {
         return me;
     }
 
-    public void setMe(Usuario me) {
+    public void setMe(Aluno me) {
         this.me = me;
     }
 
-    public static SsoDTO toDTO(Usuario user, String token) {
+    public static SsoDTO toDTO(Aluno user, String token) {
         ModelMapper modelMapper = new ModelMapper();
         SsoDTO dto = modelMapper.map(user, SsoDTO.class);
         dto.access_token = token;

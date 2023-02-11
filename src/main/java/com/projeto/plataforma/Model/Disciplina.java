@@ -19,15 +19,22 @@ public class Disciplina {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
+    @NotNull
     private String sigla;
+    @NotNull
     private String nome;
-    @ManyToMany(mappedBy = "disciplinas")
+
+    @ManyToMany(mappedBy = "disciplinasRelacionadas")
     @JsonIgnore
-    private List<Tema> temas;
+    private List<Tema> temasDisciplina;
+
+    @ManyToMany(mappedBy = "disciplinasInteresse")
+    @JsonIgnore
+    private List<Aluno> alunosDisciplina;
 
     @ManyToOne
-    @JoinColumn(name = "curso_id")
-    //    @ToString.Exclude
     @NotNull
+    @JsonIgnore
     private Curso cursoDisciplina;
+
 }

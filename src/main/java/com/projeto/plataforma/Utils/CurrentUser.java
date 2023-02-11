@@ -1,6 +1,8 @@
 package com.projeto.plataforma.Utils;
 
+import com.projeto.plataforma.Model.Aluno;
 import com.projeto.plataforma.Model.Usuario;
+import com.projeto.plataforma.Repository.AlunoRepository;
 import com.projeto.plataforma.Repository.UsuarioRepository;
 import com.google.gson.JsonParser;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +15,9 @@ import java.util.Base64;
 public class CurrentUser {
 
     @Autowired
+    private AlunoRepository alunoRepository;
+
+    @Autowired
     private UsuarioRepository usuarioRepository;
 
     public Usuario getCurrentUser(HttpHeaders headers) {
@@ -23,6 +28,8 @@ public class CurrentUser {
         Base64.Decoder decoder = Base64.getDecoder();
         String payload = new String(decoder.decode(chunks[1]));
 
-        return usuarioRepository.findByLogin(JsonParser.parseString(payload).getAsJsonObject().get("sub").getAsString()).get();
+        return alunoRepository.findByEmail(JsonParser.parseString(payload).getAsJsonObject().get("sub").getAsString()).get();
     }
+
+
 }

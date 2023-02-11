@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Data
@@ -18,21 +19,25 @@ public class Curso {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
-    private String sigla;
+    @NotNull
     private String nome;
-    @OneToMany(mappedBy = "cursoTema")
-    @JsonIgnore
-    private List<Tema> temas;
-    @OneToMany(mappedBy = "cursoUsuario")
-    @JsonIgnore
-    private List<Usuario> usuarios;
-    @OneToMany(mappedBy = "cursoSemestre")
-    @JsonIgnore
-    private List<Semestre> semestres;
+    @NotNull
+    private String sigla;
+
+    @ManyToOne
+    @NotNull
+    private Instituicao instituicaoCurso;
+
     @OneToMany(mappedBy = "cursoDisciplina")
     @JsonIgnore
-    private List<Disciplina> disciplinas;
-    @OneToMany(mappedBy = "cursoPeriodo")
+    private List<Disciplina> disciplinasCurso;
+
+    @OneToMany(mappedBy = "cursoAluno")
     @JsonIgnore
-    private List<Periodo> periodos;
+    private List<Aluno> alunosCurso;
+
+    @OneToMany(mappedBy = "cursoTema")
+    @JsonIgnore
+    private List<Tema> temasCurso;
+
 }

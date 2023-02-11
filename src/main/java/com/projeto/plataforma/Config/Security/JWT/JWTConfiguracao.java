@@ -37,10 +37,19 @@ public class JWTConfiguracao extends WebSecurityConfigurerAdapter {
         auth.setFilterProcessesUrl("/login");
 
         http.cors().configurationSource(corsConfigurationSource()).and().csrf().disable().authorizeRequests()
-                .antMatchers(HttpMethod.POST, "/login", "/usuario/cadastrarUsuario").permitAll()
+                .antMatchers(HttpMethod.POST, "/login",
+                        "/usuario/cadastrarUsuario",
+                        "/aluno/cadastrarAluno",
+                        "/curso/cadastrarCurso",
+                        "/curso/editarCurso",
+                        "/curso/deletarCurso",
+                        "/disciplina/cadastrarDisciplina",
+                        "/disciplina/editarDisciplina",
+                        "/disciplina/deletarDisciplina"
+                ).permitAll()
                 .antMatchers("/v2/api-docs", "/configuration/**", "/swagger*/**", "/webjars/**", "/api/adm/dados/*", "/api/user/**")
                 .permitAll()
-                .antMatchers("/**").permitAll() //REMOVER A PERMISSAO DEPOIS
+                .antMatchers("/**").permitAll() //REMOVER A PERMISSAO DEPOIS PARA VOLTAR A AUTENTICAR
                 .anyRequest().authenticated()
                 .and()
                 .addFilter(auth)
