@@ -29,7 +29,7 @@ public class Usuario {
     @NotNull
     private boolean ativo;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "users_roles",
             joinColumns = @JoinColumn(
@@ -37,5 +37,9 @@ public class Usuario {
             inverseJoinColumns = @JoinColumn(
                     name = "role_id", referencedColumnName = "id"))
     private Collection<Role> roles;
+
+    public boolean isEnabled() {
+        return this.ativo;
+    }
 
 }

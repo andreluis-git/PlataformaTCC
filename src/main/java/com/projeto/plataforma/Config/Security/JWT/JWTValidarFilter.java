@@ -2,6 +2,9 @@ package com.projeto.plataforma.Config.Security.JWT;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.projeto.plataforma.persistence.dao.UsuarioRepository;
+import com.projeto.plataforma.persistence.model.Usuario;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -18,6 +21,9 @@ public class JWTValidarFilter extends BasicAuthenticationFilter {
 
     public static final String HEADER_ATRIBUTO = "Authorization";
     public static final String ATRIBUTO_PREFIXO = "Bearer ";
+
+    @Autowired
+    private UsuarioRepository usuarioRepository;
 
     public JWTValidarFilter(AuthenticationManager authenticationManager) {
         super(authenticationManager);

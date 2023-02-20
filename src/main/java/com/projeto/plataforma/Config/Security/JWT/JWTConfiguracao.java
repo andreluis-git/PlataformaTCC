@@ -1,8 +1,10 @@
 package com.projeto.plataforma.Config.Security.JWT;
 
+import com.projeto.plataforma.Config.Security.Permissoes.MyUserDetailService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -15,12 +17,13 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import java.util.Arrays;
 
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class JWTConfiguracao extends WebSecurityConfigurerAdapter {
 
-    private final DetalheUsuarioServiceImpl usuarioService;
+    private final MyUserDetailService usuarioService;
     private final PasswordEncoder passwordEncoder;
 
-    public JWTConfiguracao(DetalheUsuarioServiceImpl usuarioService, PasswordEncoder passwordEncoder) {
+    public JWTConfiguracao(MyUserDetailService usuarioService, PasswordEncoder passwordEncoder) {
         this.usuarioService = usuarioService;
         this.passwordEncoder = passwordEncoder;
     }

@@ -1,5 +1,6 @@
 package com.projeto.plataforma.Config.Security.JWT;
 
+import com.projeto.plataforma.Config.Security.Permissoes.MyUserDetailService;
 import com.projeto.plataforma.persistence.model.Usuario;
 import com.projeto.plataforma.persistence.dao.UsuarioRepository;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,11 +22,14 @@ public class DetalheUsuarioServiceImpl implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-        Optional<Usuario> usuario = usuarioRepository.findByEmail(username);
-        if (!usuario.isPresent()) {
+        Optional<Usuario> usuarioOptional = usuarioRepository.findByEmail(username);
+        if (!usuarioOptional.isPresent()) {
             throw new UsernameNotFoundException("Usuário [" + username +"] não encontrado");
         }
 
-        return new DetalheUsuarioData(usuario);
+//        Usuario user = usuarioOptional.get();
+
+        return new DetalheUsuarioData(usuarioOptional);
+//        return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), user.isEnabled(), true, true, true, user.getAuthorities());
     }
 }

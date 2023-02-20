@@ -1,5 +1,6 @@
 package com.projeto.plataforma.Config.Security.Permissoes;
 
+import com.projeto.plataforma.Config.Security.JWT.DetalheUsuarioData;
 import com.projeto.plataforma.persistence.model.Privilege;
 import com.projeto.plataforma.persistence.model.Role;
 import com.projeto.plataforma.persistence.model.Usuario;
@@ -16,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 @Service("userDetailsService")
 @Transactional
@@ -40,12 +42,16 @@ public class MyUserDetailService implements UserDetailsService {
         }
 
         try {
-            final Usuario user = usuarioRepository.findByEmail(email).get();
-            if (user == null) {
+            final Optional<Usuario> userOpt = usuarioRepository.findByEmail(email);
+            if (!userOpt.isPresent()) {
                 throw new UsernameNotFoundException("No user found with username: " + email);
             }
 
-            return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), user.isAtivo(), true, true, true, getAuthorities(user.getRoles()));
+//            Usuario user = userOpt.get();
+
+            return new DetalheUsuarioData(userOpt);
+//            return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), user.isEnabled(), true, true, true, getAuthorities(user.getRoles()));
+
         } catch (final Exception e) {
             throw new RuntimeException(e);
         }

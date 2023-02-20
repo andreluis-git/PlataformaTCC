@@ -1,6 +1,8 @@
 package com.projeto.plataforma.persistence.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,6 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity(name="Curso")
+//@JsonIgnoreProperties({"instituicaoCurso"})
 public class Curso {
 
     @Id
@@ -26,6 +29,7 @@ public class Curso {
 
     @ManyToOne
     @NotNull
+    @JsonBackReference
     private Instituicao instituicaoCurso;
 
     @OneToMany(mappedBy = "cursoDisciplina")
