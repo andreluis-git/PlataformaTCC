@@ -52,33 +52,4 @@ public class UserDetailsPrincipal implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return this.usuario.get().getRoles().stream().map(role -> new SimpleGrantedAuthority(role.getName())).collect(Collectors.toList());
     }
-
-//    @Override
-//    public Collection<? extends GrantedAuthority> getAuthorities() {
-//        return getGrantedAuthorities(getPrivileges());
-//    }
-//
-//    public List<String> getPrivileges() {
-//        final List<String> privileges = new ArrayList<>();
-//        final List<Privilege> collection = new ArrayList<>();
-//        final List<Role> roles = new ArrayList<>(this.usuario.get().getRoles());
-//        for (final Role role : roles) {
-//            privileges.add(role.getName());
-//            collection.addAll(role.getPrivileges());
-//        }
-//        for (final Privilege item : collection) {
-//            privileges.add(item.getName());
-//        }
-//
-//        return privileges;
-//    }
-//
-//    public List<GrantedAuthority> getGrantedAuthorities(final List<String> privileges) {
-//        final List<GrantedAuthority> authorities = new ArrayList<>();
-//        for (final String privilege : privileges) {
-//            authorities.add(new SimpleGrantedAuthority(privilege));
-//        }
-//        return authorities;
-//    }
-
 }

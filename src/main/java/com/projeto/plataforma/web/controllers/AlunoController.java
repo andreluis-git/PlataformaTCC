@@ -1,9 +1,8 @@
 package com.projeto.plataforma.web.controllers;
 
-import com.projeto.plataforma.persistence.model.Aluno;
 import com.projeto.plataforma.persistence.dao.AlunoRepository;
+import com.projeto.plataforma.persistence.model.Aluno;
 import com.projeto.plataforma.web.util.CurrentUser;
-import com.projeto.plataforma.web.util.ValidationUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -24,8 +23,7 @@ public class AlunoController {
 
     @Autowired
     private CurrentUser currentUser;
-    @Autowired
-    private ValidationUtils validationUtils;
+
 
     @GetMapping("/buscarAluno")
     public ResponseEntity<Object> buscarAlunoPorId(@RequestHeader HttpHeaders headers) {
@@ -33,13 +31,9 @@ public class AlunoController {
     }
 
     @PostMapping("/cadastrarAluno")
-    public ResponseEntity<Object> cadastrarAluno(@RequestHeader(value=ValidationUtils.HEADER_INSTITUICAO) String instituicaoKey, @RequestBody Aluno aluno) {
+    public ResponseEntity<Object> cadastrarAluno(@RequestBody Aluno aluno) {
 
         try {
-            if(!validationUtils.validarInstituicao(instituicaoKey)) {
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-            }
-
             aluno.setPassword(encoder.encode(aluno.getPassword()));
             return ResponseEntity.ok(alunoRepository.save(aluno));
         }
@@ -51,10 +45,6 @@ public class AlunoController {
     @PutMapping("/editarAluno")
     public ResponseEntity<Object> editarAluno(@RequestHeader HttpHeaders headers, @RequestBody Aluno aluno) {
         try {
-            if(!validationUtils.validarUsuario(headers, aluno.getId())) {
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-            }
-
             Optional<Aluno> optAluno = alunoRepository.findById(aluno.getId());
             if(optAluno.isEmpty()) {
                 return ResponseEntity.badRequest().build();

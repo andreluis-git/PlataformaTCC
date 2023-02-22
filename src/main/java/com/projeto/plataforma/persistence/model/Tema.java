@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -27,11 +28,12 @@ public class Tema {
     private String descricao;
     @Column(nullable = false)
     private Boolean ativo = true;
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
         name = "temaDisciplina",
         joinColumns = @JoinColumn(name = "temaId"),
         inverseJoinColumns = @JoinColumn(name = "disciplinaId"))
+    @Cascade(value = org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
 //    @ToString.Exclude
 //    @NotNull
     private List<Disciplina> disciplinasRelacionadas;
@@ -42,7 +44,8 @@ public class Tema {
     @ManyToOne
     @NotNull
     private Curso cursoTema;
-    @ManyToMany(mappedBy = "candidaturasAluno")
+    @ManyToMany(mappedBy = "candidaturasAluno", cascade = CascadeType.ALL)
+    @Cascade(value = org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
     @JsonIgnore
     private List<Aluno> candidatosTema;
 

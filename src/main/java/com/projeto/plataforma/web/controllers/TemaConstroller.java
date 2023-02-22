@@ -1,11 +1,10 @@
 package com.projeto.plataforma.web.controllers;
 
-import com.projeto.plataforma.persistence.model.Aluno;
-import com.projeto.plataforma.persistence.model.Tema;
 import com.projeto.plataforma.persistence.dao.AlunoRepository;
 import com.projeto.plataforma.persistence.dao.TemaRepository;
+import com.projeto.plataforma.persistence.model.Aluno;
+import com.projeto.plataforma.persistence.model.Tema;
 import com.projeto.plataforma.web.util.CurrentUser;
-import com.projeto.plataforma.web.util.ValidationUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -21,8 +20,6 @@ public class TemaConstroller {
     private TemaRepository temaRepository;
     @Autowired
     private CurrentUser currentUser;
-    @Autowired
-    private ValidationUtils validationUtils;
 
     @PostMapping("/gravarTema")
     public ResponseEntity<Object> gravarTema(@RequestBody Tema tema) {

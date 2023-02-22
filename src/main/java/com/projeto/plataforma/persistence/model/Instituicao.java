@@ -6,21 +6,23 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import java.util.List;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity(name="Instituicao")
-public class Instituicao extends Usuario{
-    @OneToMany(mappedBy = "instituicaoCurso")
+public class Instituicao extends Usuario {
+    @OneToMany(mappedBy = "instituicaoCurso", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     @JsonManagedReference
     List<Curso> cursosInstituicao;
 
-    @OneToMany(mappedBy = "instituicaoAluno")
+    @OneToMany(mappedBy = "instituicaoAluno", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     List<Aluno> alunosInstituicao;
 }

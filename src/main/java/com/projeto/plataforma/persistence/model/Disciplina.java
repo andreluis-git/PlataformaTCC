@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -24,11 +25,11 @@ public class Disciplina {
     @NotNull
     private String nome;
 
-    @ManyToMany(mappedBy = "disciplinasRelacionadas")
+    @ManyToMany(mappedBy = "disciplinasRelacionadas", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Tema> temasDisciplina;
 
-    @ManyToMany(mappedBy = "disciplinasInteresse")
+    @ManyToMany(mappedBy = "disciplinasInteresse", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Aluno> alunosDisciplina;
 

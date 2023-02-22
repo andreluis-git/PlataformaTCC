@@ -47,7 +47,6 @@ public class JWTConfiguracao extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.POST, "/login", "/instituicao/cadastrarInstituicao", "/usuario/cadastrarUsuario").permitAll()
                 .antMatchers("/v2/api-docs", "/configuration/**", "/swagger*/**", "/webjars/**", "/api/adm/dados/*", "/api/user/**", "/teste/**")
                 .permitAll()
-                .antMatchers("/**").permitAll() //REMOVER A PERMISSAO DEPOIS PARA VOLTAR A AUTENTICAR
                 .anyRequest().authenticated()
                 .and()
                 .addFilter(auth)
