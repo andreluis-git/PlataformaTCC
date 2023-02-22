@@ -1,4 +1,4 @@
-package com.projeto.plataforma.Config.Properties;
+package com.projeto.plataforma.config.properties;
 
 import org.springframework.stereotype.Component;
 

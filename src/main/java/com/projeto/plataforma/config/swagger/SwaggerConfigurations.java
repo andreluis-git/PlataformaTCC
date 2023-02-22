@@ -1,4 +1,4 @@
-package com.projeto.plataforma.Config.Swagger;
+package com.projeto.plataforma.config.swagger;
 
 import java.util.Collections;
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.projeto.plataforma.Config.Security.JWT;
+package com.projeto.plataforma.config.security.jwt;
 
 import com.projeto.plataforma.persistence.dao.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;

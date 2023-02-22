@@ -1,4 +1,4 @@
-package com.projeto.plataforma.Config.Security.Permissoes;
+package com.projeto.plataforma.config.security.permissoes;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
