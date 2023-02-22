@@ -1,6 +1,6 @@
-package com.projeto.plataforma.Config.Security.Permissoes;
+package com.projeto.plataforma.Config.Security.JWT;
 
-import com.projeto.plataforma.Config.Security.JWT.DetalheUsuarioData;
+import com.projeto.plataforma.Config.Security.Permissoes.LoginAttemptService;
 import com.projeto.plataforma.persistence.model.Privilege;
 import com.projeto.plataforma.persistence.model.Role;
 import com.projeto.plataforma.persistence.model.Usuario;
@@ -21,7 +21,7 @@ import java.util.Optional;
 
 @Service("userDetailsService")
 @Transactional
-public class MyUserDetailService implements UserDetailsService {
+public class CustomUserDetailsService implements UserDetailsService {
 
     @Autowired
     private UsuarioRepository usuarioRepository;
@@ -29,7 +29,7 @@ public class MyUserDetailService implements UserDetailsService {
     @Autowired
     private LoginAttemptService loginAttemptService;
 
-    public MyUserDetailService() {
+    public CustomUserDetailsService() {
         super();
     }
 
@@ -49,7 +49,7 @@ public class MyUserDetailService implements UserDetailsService {
 
 //            Usuario user = userOpt.get();
 
-            return new DetalheUsuarioData(userOpt);
+            return new UserDetailsPrincipal(userOpt);
 //            return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), user.isEnabled(), true, true, true, getAuthorities(user.getRoles()));
 
         } catch (final Exception e) {

@@ -1,6 +1,7 @@
 package com.projeto.plataforma.Config.Security.JWT;
 
-import com.projeto.plataforma.Config.Security.Permissoes.MyUserDetailService;
+import com.projeto.plataforma.persistence.dao.UsuarioRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -20,10 +21,13 @@ import java.util.Arrays;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class JWTConfiguracao extends WebSecurityConfigurerAdapter {
 
-    private final MyUserDetailService usuarioService;
+    private final CustomUserDetailsService usuarioService;
     private final PasswordEncoder passwordEncoder;
 
-    public JWTConfiguracao(MyUserDetailService usuarioService, PasswordEncoder passwordEncoder) {
+    @Autowired
+    private UsuarioRepository usuarioRepository;
+
+    public JWTConfiguracao(CustomUserDetailsService usuarioService, PasswordEncoder passwordEncoder) {
         this.usuarioService = usuarioService;
         this.passwordEncoder = passwordEncoder;
     }
@@ -47,7 +51,7 @@ public class JWTConfiguracao extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated()
                 .and()
                 .addFilter(auth)
-                .addFilter(new JWTValidarFilter(authenticationManager()))
+                .addFilter(new JWTValidarFilter(authenticationManager(), usuarioRepository))
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     }
 

@@ -53,7 +53,7 @@ public class JWTAutenticarFilter extends UsernamePasswordAuthenticationFilter {
                                             FilterChain chain,
                                             Authentication authResult) throws IOException {
 
-        DetalheUsuarioData usuarioData = (DetalheUsuarioData) authResult.getPrincipal();
+        UserDetailsPrincipal usuarioData = (UserDetailsPrincipal) authResult.getPrincipal();
 
         String token = JWT.create().
                 withSubject(usuarioData.getUsername())

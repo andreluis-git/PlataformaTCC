@@ -22,11 +22,11 @@ public class JWTValidarFilter extends BasicAuthenticationFilter {
     public static final String HEADER_ATRIBUTO = "Authorization";
     public static final String ATRIBUTO_PREFIXO = "Bearer ";
 
-    @Autowired
     private UsuarioRepository usuarioRepository;
 
-    public JWTValidarFilter(AuthenticationManager authenticationManager) {
+    public JWTValidarFilter(AuthenticationManager authenticationManager, UsuarioRepository usuarioRepository) {
         super(authenticationManager);
+        this.usuarioRepository = usuarioRepository;
     }
 
     @Override
@@ -64,6 +64,8 @@ public class JWTValidarFilter extends BasicAuthenticationFilter {
             return null;
         }
 
-        return new UsernamePasswordAuthenticationToken(usuario,null, new ArrayList<>());
+        UserDetailsPrincipal userDetailsPrincipal = new UserDetailsPrincipal(usuarioRepository.findByEmail(usuario));
+
+        return new UsernamePasswordAuthenticationToken(usuario,null, userDetailsPrincipal.getAuthorities());
     }
 }
