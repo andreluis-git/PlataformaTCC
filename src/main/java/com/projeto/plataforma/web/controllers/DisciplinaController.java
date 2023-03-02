@@ -18,11 +18,19 @@ public class DisciplinaController {
     @Autowired
     private DisciplinaRepository disciplinaRepository;
 
+    @GetMapping("/buscarDisciplina")
+    public ResponseEntity<Object> buscarDisciplinaPorId(@RequestParam Long id) {
+        return ResponseEntity.ok(disciplinaRepository.findById(id).get());
+    }
+
+    @GetMapping("/buscarDisciplinaPorNome")
+    public ResponseEntity<Object> buscarDisciplinaPorNome(@RequestParam String nome) {
+        return ResponseEntity.ok(disciplinaRepository.findByNome(nome).get());
+    }
 
     @GetMapping("/listarDisciplinas")
     public ResponseEntity<Object> listarDisciplinas() {
-        List<Disciplina> listaDisciplinas = disciplinaRepository.findAll();
-        return ResponseEntity.ok(listaDisciplinas);
+        return ResponseEntity.ok(disciplinaRepository.findAll());
     }
 
     @PostMapping("/cadastrarDisciplina")

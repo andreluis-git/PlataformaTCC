@@ -26,10 +26,6 @@ public class Aluno extends Usuario {
 
     @ManyToOne
     @NotNull
-    private Instituicao instituicaoAluno;
-
-    @ManyToOne
-    @NotNull
     private Curso cursoAluno;
 
     @ManyToMany(cascade = CascadeType.ALL)

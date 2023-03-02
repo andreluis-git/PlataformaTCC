@@ -16,6 +16,16 @@ public class CursoController {
     @Autowired
     private CursoRepository cursoRepository;
 
+    @GetMapping("/buscarCurso")
+    public ResponseEntity<Object> buscarCursoPorId(@RequestParam Long id) {
+        return ResponseEntity.ok(cursoRepository.findById(id).get());
+    }
+
+    @GetMapping("/buscarCursoPorNome")
+    public ResponseEntity<Object> buscarCursoPorNome(@RequestParam String nome) {
+        return ResponseEntity.ok(cursoRepository.findByNome(nome).get());
+    }
+
     @GetMapping("/listarCursos")
     public ResponseEntity<Object> listarCursos() {
         return ResponseEntity.ok(cursoRepository.findAll());

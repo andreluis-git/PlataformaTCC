@@ -90,13 +90,10 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
             aluno.setPassword("senha");
 
             if (i <= 20) {
-                aluno.setInstituicaoAluno(instituicao1);
                 aluno.setCursoAluno(cursoADS);
             } else if (i <= 30){
-                aluno.setInstituicaoAluno(instituicao1);
                 aluno.setCursoAluno(cursoGE);
             } else {
-                aluno.setInstituicaoAluno(instituicao2);
                 aluno.setCursoAluno(cursoGA);
             }
 

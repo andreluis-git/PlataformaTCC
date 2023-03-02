@@ -21,18 +21,24 @@ public class TemaConstroller {
     @Autowired
     private CurrentUser currentUser;
 
-    @PostMapping("/gravarTema")
-    public ResponseEntity<Object> gravarTema(@RequestBody Tema tema) {
+    @GetMapping("/buscarTema")
+    public ResponseEntity<Object> buscarTemaPorId(@RequestParam Long id) {
 
         try {
-            if(tema == null) {
-                return ResponseEntity.badRequest().build();
-            }
-            tema = temaRepository.save(tema);
-
-            return ResponseEntity.ok(tema);
+            return ResponseEntity.ok(temaRepository.findById(id).get());
         }
-        catch (Exception ex){
+        catch (Exception ex) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @GetMapping("/buscarTemaPorNome")
+    public ResponseEntity<Object> buscarTemaPorNome(@RequestParam String nome) {
+
+        try {
+            return ResponseEntity.ok(temaRepository.findByNome(nome).get());
+        }
+        catch (Exception ex) {
             return ResponseEntity.badRequest().build();
         }
     }
@@ -49,6 +55,38 @@ public class TemaConstroller {
             return ResponseEntity.badRequest().build();
         }
 
+    }
+
+    @PostMapping("/gravarTema")
+    public ResponseEntity<Object> gravarTema(@RequestBody Tema tema) {
+
+        try {
+            if(tema == null) {
+                return ResponseEntity.badRequest().build();
+            }
+            tema = temaRepository.save(tema);
+
+            return ResponseEntity.ok(tema);
+        }
+        catch (Exception ex){
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @PostMapping("/editarTema")
+    public ResponseEntity<Object> editarTema(@RequestBody Tema tema) {
+
+        try {
+            if(tema == null) {
+                return ResponseEntity.badRequest().build();
+            }
+            tema = temaRepository.save(tema);
+
+            return ResponseEntity.ok(tema);
+        }
+        catch (Exception ex){
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @DeleteMapping("/deletarTema")

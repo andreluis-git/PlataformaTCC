@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,9 +26,14 @@ public class AlunoController {
     private CurrentUser currentUser;
 
 
-    @GetMapping("/buscarAluno")
-    public ResponseEntity<Object> buscarAlunoPorId(@RequestHeader HttpHeaders headers) {
-        return ResponseEntity.ok(alunoRepository.findById(currentUser.getCurrentUser(headers).getId()));
+    @GetMapping("/buscarAluno/{id}")
+    public ResponseEntity<Object> buscarAlunoPorId(@PathVariable Long id) {
+        return ResponseEntity.ok(alunoRepository.findById(id).get());
+    }
+
+    @GetMapping("/buscarAlunoPorNome/{id}")
+    public ResponseEntity<Object> buscarAlunoPorEmail(@PathVariable String email) {
+        return ResponseEntity.ok(alunoRepository.findByEmail(email).get());
     }
 
     @PostMapping("/cadastrarAluno")
@@ -66,5 +72,13 @@ public class AlunoController {
         catch (Exception ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Erro: " + ex.getMessage().toString());
         }
+    }
+
+    @DeleteMapping("/deletarCurso")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_INSTITUICAO')")
+    public ResponseEntity<Object> deletarCurso(@RequestParam Long alunoId) {
+        alunoRepository.deleteById(alunoId);
+
+        return  ResponseEntity.ok().build();
     }
 }

@@ -29,6 +29,43 @@ public class InstituicaoController {
     @Autowired
     private PasswordEncoder encoder;
 
+    @GetMapping("/buscarInstituicao")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<Object> buscarInstituicaoPorId(@RequestParam Long id) {
+
+        try {
+            Instituicao instituicao = instituicaoRepository.findById(id).get();
+            return ResponseEntity.ok(instituicao);
+        }
+        catch (Exception ex){
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @GetMapping("/buscarInstituicaoPorNome")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<Object> buscarInstituicaoPorNome(@RequestParam String nome) {
+
+        try {
+            return ResponseEntity.ok(instituicaoRepository.findByNome(nome).get());
+        }
+        catch (Exception ex){
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @GetMapping("/listarInstituicoes")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<Object> listarInstituicoes() {
+
+        try {
+            return ResponseEntity.ok(instituicaoRepository.findAll());
+        }
+        catch (Exception ex){
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
     @PostMapping("/cadastrarInstituicao")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<Object> cadastrarInstituicao(@RequestBody Instituicao instituicao) {

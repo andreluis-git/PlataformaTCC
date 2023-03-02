@@ -22,7 +22,4 @@ public class Instituicao extends Usuario {
     @JsonManagedReference
     List<Curso> cursosInstituicao;
 
-    @OneToMany(mappedBy = "instituicaoAluno", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnore
-    List<Aluno> alunosInstituicao;
 }
