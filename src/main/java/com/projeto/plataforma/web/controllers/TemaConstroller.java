@@ -36,7 +36,7 @@ public class TemaConstroller {
     public ResponseEntity<Object> buscarTemaPorNome(@RequestParam String nome) {
 
         try {
-            return ResponseEntity.ok(temaRepository.findByNome(nome).get());
+            return ResponseEntity.ok(temaRepository.findByTitulo(nome).get());
         }
         catch (Exception ex) {
             return ResponseEntity.badRequest().build();
