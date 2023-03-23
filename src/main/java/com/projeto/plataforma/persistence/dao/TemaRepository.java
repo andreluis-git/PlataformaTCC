@@ -5,6 +5,8 @@ import com.projeto.plataforma.persistence.model.Aluno;
 import com.projeto.plataforma.persistence.model.Disciplina;
 import com.projeto.plataforma.persistence.model.Tema;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Optional;
@@ -12,8 +14,9 @@ import java.util.Optional;
 public interface TemaRepository extends JpaRepository <Tema, Long> {
     List<Tema> findByIdIn(List<Tema> ids);
     List<Tema> findAllByCriadorTemaIdIn(List<Aluno> ids);
-    List<Tema> findAllByDisciplinasRelacionadasIdIn(List<Disciplina> ids);
+    List<Tema> findAllByDisciplinasRelacionadasIdIn(List<Long> ids);
     List<Tema> findByCriadorTemaId(Long id);
     List<Aluno> findAllCandidatosTemaById(Long temaId);
     Optional<Tema> findByTitulo(String titulo);
+
 }

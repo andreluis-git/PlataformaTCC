@@ -3,12 +3,21 @@ package com.projeto.plataforma.web.controllers;
 import com.projeto.plataforma.persistence.dao.AlunoRepository;
 import com.projeto.plataforma.persistence.dao.TemaRepository;
 import com.projeto.plataforma.persistence.model.Aluno;
+import com.projeto.plataforma.persistence.model.Disciplina;
 import com.projeto.plataforma.persistence.model.Tema;
+import com.projeto.plataforma.persistence.model.Usuario;
 import com.projeto.plataforma.web.util.CurrentUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/tema")
@@ -20,6 +29,9 @@ public class TemaConstroller {
     private TemaRepository temaRepository;
     @Autowired
     private CurrentUser currentUser;
+
+    @Autowired
+    private EntityManager em;
 
     @GetMapping("/buscarTema")
     public ResponseEntity<Object> buscarTemaPorId(@RequestParam Long id) {
@@ -47,12 +59,17 @@ public class TemaConstroller {
     public ResponseEntity<Object> listarTemas(@RequestHeader HttpHeaders headers) {
 
         try {
-            Aluno aluno = alunoRepository.getById(currentUser.getCurrentUser(headers).getId());
+            Usuario user = currentUser.getCurrentUser(headers);
+            Aluno aluno = alunoRepository.findById(user.getId()).get();
 
-            return ResponseEntity.ok(temaRepository.findByIdIn(aluno.getTemasAluno()));
+            List<Long> disciplinaIds = aluno.getDisciplinasInteresse().stream().map(Disciplina::getId).collect(Collectors.toList());
+
+            List<Tema> temas = temaRepository.findAllByDisciplinasRelacionadasIdIn(disciplinaIds);
+
+            return ResponseEntity.ok(temas);
         }
         catch (Exception ex) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest().body(ex.getCause());
         }
 
     }
@@ -64,6 +81,12 @@ public class TemaConstroller {
             if(tema == null) {
                 return ResponseEntity.badRequest().build();
             }
+
+            Date date = Calendar.getInstance().getTime();
+            DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd HH:mm:ss");
+            String strDate = dateFormat.format(date);
+
+            tema.setDataCriacao(strDate);
             tema = temaRepository.save(tema);
 
             return ResponseEntity.ok(tema);

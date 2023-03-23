@@ -27,7 +27,9 @@ public class CurrentUser {
         Base64.Decoder decoder = Base64.getDecoder();
         String payload = new String(decoder.decode(chunks[1]));
 
-        return alunoRepository.findByEmail(JsonParser.parseString(payload).getAsJsonObject().get("sub").getAsString()).get();
+        Usuario user = alunoRepository.findByEmail(JsonParser.parseString(payload).getAsJsonObject().get("sub").getAsString()).get();
+
+        return user;
     }
 
 

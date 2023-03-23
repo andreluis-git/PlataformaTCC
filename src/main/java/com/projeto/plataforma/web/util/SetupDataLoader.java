@@ -9,10 +9,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import java.lang.reflect.Array;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @Component
 public class SetupDataLoader implements ApplicationListener<ContextRefreshedEvent> {
@@ -91,13 +91,40 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
 
             if (i <= 20) {
                 aluno.setCursoAluno(cursoADS);
+                if (i < 10) {
+                    aluno.setDisciplinasInteresse(new ArrayList<>(Arrays.asList(disciplinaADS1)));
+                }
+                else {
+                    aluno.setDisciplinasInteresse(new ArrayList<>(Arrays.asList(disciplinaADS2)));
+                }
             } else if (i <= 30){
                 aluno.setCursoAluno(cursoGE);
+                aluno.setDisciplinasInteresse(new ArrayList<>(Arrays.asList(disciplinaGE1)));
             } else {
                 aluno.setCursoAluno(cursoGA);
+                aluno.setDisciplinasInteresse(new ArrayList<>(Arrays.asList(disciplinaGA1)));
             }
 
-            createAlunoIfNotFound(aluno);
+            aluno = createAlunoIfNotFound(aluno, new ArrayList<>(Arrays.asList(userRole)));
+
+            if (aluno.getId() == 15 && temaRepository.findByTitulo("Um titulo qualquer 0").orElse(null) == null) {
+                for (int j = 0; j < 25; j++) {
+                    Tema tema = new Tema();
+                    tema.setCriadorTema(aluno);
+                    tema.setTitulo("Um titulo qualquer " + j);
+                    tema.setDescricao("Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.");
+                    tema.setCursoTema(aluno.getCursoAluno());
+                    tema.setDisciplinasRelacionadas(new ArrayList<>(Arrays.asList(disciplinaADS1)));
+
+                    Date date = Calendar.getInstance().getTime();
+                    DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    String strDate = dateFormat.format(date);
+
+                    tema.setDataCriacao(strDate);
+
+                    temaRepository.save(tema);
+                }
+            }
         }
 
         alreadySetup = true;
@@ -171,13 +198,16 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
     }
 
     @Transactional
-    Aluno createAlunoIfNotFound(final Aluno aluno) {
+    Aluno createAlunoIfNotFound(final Aluno aluno, final Collection<Role> roles) {
         Aluno alunoBanco = alunoRepository.findByEmail(aluno.getEmail()).orElse(null);
 
         if (alunoBanco == null) {
-            alunoBanco = alunoRepository.save(aluno);
+            alunoBanco = aluno;
+            alunoBanco.setPassword(passwordEncoder.encode(aluno.getPassword()));
+            alunoBanco.setAtivo(true);
+            alunoBanco.setRoles(roles);
+            alunoBanco = alunoRepository.save(alunoBanco);
         }
-
         return alunoBanco;
     }
 

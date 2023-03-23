@@ -1,5 +1,6 @@
 package com.projeto.plataforma.persistence.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,6 +10,7 @@ import org.hibernate.annotations.Cascade;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -26,16 +28,16 @@ public class Disciplina {
     private String nome;
 
     @ManyToMany(mappedBy = "disciplinasRelacionadas", cascade = CascadeType.ALL)
-    @JsonIgnore
+    @JsonBackReference
     private List<Tema> temasDisciplina;
 
     @ManyToMany(mappedBy = "disciplinasInteresse", cascade = CascadeType.ALL)
-    @JsonIgnore
+    @JsonBackReference
     private List<Aluno> alunosDisciplina;
 
     @ManyToOne
     @NotNull
-    @JsonIgnore
+    @JsonBackReference
     private Curso cursoDisciplina;
 
 }

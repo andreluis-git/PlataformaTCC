@@ -1,5 +1,9 @@
 package com.projeto.plataforma.persistence.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
+
 import javax.persistence.*;
 import java.util.Collection;
 
@@ -11,12 +15,14 @@ public class Role {
     private Long id;
 
     @ManyToMany(mappedBy = "roles")
+    @JsonBackReference
     private Collection<Usuario> users;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "roles_privileges",
             joinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "privilege_id", referencedColumnName = "id"))
+    @LazyCollection(LazyCollectionOption.FALSE)
     private Collection<Privilege> privileges;
 
     private String name;

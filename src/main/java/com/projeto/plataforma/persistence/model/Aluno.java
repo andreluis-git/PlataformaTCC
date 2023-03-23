@@ -6,10 +6,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -34,6 +37,7 @@ public class Aluno extends Usuario {
             joinColumns = @JoinColumn(name = "alunoId"),
             inverseJoinColumns = @JoinColumn(name = "disciplinaId"))
     @Cascade(value = org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
+    @LazyCollection(LazyCollectionOption.FALSE)
     private List<Disciplina> disciplinasInteresse;
 
     @OneToMany(mappedBy = "criadorTema", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -46,6 +50,7 @@ public class Aluno extends Usuario {
             joinColumns = @JoinColumn(name = "alunoId"),
             inverseJoinColumns = @JoinColumn(name = "temaId"))
     @Cascade(value = org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
+    @LazyCollection(LazyCollectionOption.FALSE)
     private List<Tema> candidaturasAluno;
 
 }
