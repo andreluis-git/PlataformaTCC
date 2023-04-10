@@ -2,6 +2,9 @@ package com.projeto.plataforma.web.controllers;
 
 import com.projeto.plataforma.persistence.dao.AlunoRepository;
 import com.projeto.plataforma.persistence.model.Aluno;
+import com.projeto.plataforma.persistence.model.Disciplina;
+import com.projeto.plataforma.persistence.model.Tema;
+import com.projeto.plataforma.persistence.model.Usuario;
 import com.projeto.plataforma.web.util.CurrentUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -11,7 +14,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/aluno")
@@ -34,6 +39,19 @@ public class AlunoController {
     @GetMapping("/buscarAlunoPorNome/{id}")
     public ResponseEntity<Object> buscarAlunoPorEmail(@PathVariable String email) {
         return ResponseEntity.ok(alunoRepository.findByEmail(email).get());
+    }
+
+    @GetMapping("/buscarAluno")
+    public ResponseEntity<Object> buscarAlunoPorHeader(@RequestHeader HttpHeaders headers) {
+        try {
+            Usuario user = currentUser.getCurrentUser(headers);
+            Aluno aluno = alunoRepository.findById(user.getId()).get();
+
+            return ResponseEntity.ok(aluno);
+        }
+        catch (Exception ex) {
+            return ResponseEntity.badRequest().body(ex.getCause());
+        }
     }
 
     @PostMapping("/cadastrarAluno")

@@ -13,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityManager;
-import javax.persistence.Query;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -44,11 +43,27 @@ public class TemaConstroller {
         }
     }
 
-    @GetMapping("/buscarTemaPorNome")
-    public ResponseEntity<Object> buscarTemaPorNome(@RequestParam String nome) {
+    @GetMapping("/buscarTemasPorTitulo")
+    public ResponseEntity<Object> buscarTemasPorTitulo(@RequestParam String titulo) {
 
         try {
-            return ResponseEntity.ok(temaRepository.findByTitulo(nome).get());
+            return ResponseEntity.ok(temaRepository.findAllByTituloContains(titulo));
+        }
+        catch (Exception ex) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @GetMapping("/buscarTemasAnunciadosPorTitulo")
+    public ResponseEntity<Object> buscarTemaPorTitulo(@RequestHeader HttpHeaders headers, @RequestParam String titulo) {
+
+        try {
+            Usuario user = currentUser.getCurrentUser(headers);
+            Aluno aluno = alunoRepository.findById(user.getId()).get();
+
+            List<Tema> temas = temaRepository.findAllByCriadorTemaIdAndTituloOrderByIdAsc(aluno.getId(), titulo);
+
+            return ResponseEntity.ok(temas);
         }
         catch (Exception ex) {
             return ResponseEntity.badRequest().build();
@@ -65,6 +80,57 @@ public class TemaConstroller {
             List<Long> disciplinaIds = aluno.getDisciplinasInteresse().stream().map(Disciplina::getId).collect(Collectors.toList());
 
             List<Tema> temas = temaRepository.findAllByDisciplinasRelacionadasIdIn(disciplinaIds);
+
+            return ResponseEntity.ok(temas);
+        }
+        catch (Exception ex) {
+            return ResponseEntity.badRequest().body(ex.getCause());
+        }
+
+    }
+
+    @GetMapping("/listarTemasAnunciados")
+    public ResponseEntity<Object> listarTemasAnunciados(@RequestHeader HttpHeaders headers) {
+
+        try {
+            Usuario user = currentUser.getCurrentUser(headers);
+            Aluno aluno = alunoRepository.findById(user.getId()).get();
+
+            List<Tema> temas = temaRepository.findAllByCriadorTemaIdOrderByIdAsc(aluno.getId());
+
+            return ResponseEntity.ok(temas);
+        }
+        catch (Exception ex) {
+            return ResponseEntity.badRequest().body(ex.getCause());
+        }
+
+    }
+
+    @GetMapping("/listarTemasCandidaturas")
+    public ResponseEntity<Object> listarTemasCandidaturas(@RequestHeader HttpHeaders headers) {
+
+        try {
+            Usuario user = currentUser.getCurrentUser(headers);
+            Aluno aluno = alunoRepository.findById(user.getId()).get();
+
+            List<Tema> temas = temaRepository.findAllByCandidatosTemaId(aluno.getId());
+
+            return ResponseEntity.ok(temas);
+        }
+        catch (Exception ex) {
+            return ResponseEntity.badRequest().body(ex.getCause());
+        }
+
+    }
+
+    @GetMapping("/testeListaTema")
+    public ResponseEntity<Object> testeListaTema(@RequestHeader HttpHeaders headers) {
+
+        try {
+            Usuario user = currentUser.getCurrentUser(headers);
+            Aluno aluno = alunoRepository.findById(user.getId()).get();
+
+            List<Tema> temas = temaRepository.findAllQuery(aluno.getCursoAluno().getId());
 
             return ResponseEntity.ok(temas);
         }
@@ -117,5 +183,44 @@ public class TemaConstroller {
         temaRepository.deleteById(temaId);
 
         return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/candidatarTema")
+    public ResponseEntity<Object> candidatarTema(@RequestHeader HttpHeaders headers, @RequestParam Long temaId) {
+
+        try {
+            Usuario user = currentUser.getCurrentUser(headers);
+            Aluno aluno = alunoRepository.findById(user.getId()).get();
+
+            Tema temaBanco = temaRepository.findById(temaId).orElse(null);
+
+            if (temaBanco == null) {
+                return ResponseEntity.badRequest().body("Tema não encontrado");
+            }
+
+            aluno.setCandidaturasAluno(temaBanco);
+
+            alunoRepository.save(aluno);
+
+            return ResponseEntity.ok().build();
+        }
+        catch (Exception ex) {
+            return ResponseEntity.badRequest().body(ex.getCause());
+        }
+
+    }
+
+    @GetMapping("/listarCandidatosTema")
+    public ResponseEntity<Object> listarCandidatosTema(@RequestParam Long temaId) {
+
+        try {
+            List<Aluno> candidatos = alunoRepository.findAllByCandidaturasAlunoId(temaId);
+
+            return ResponseEntity.ok(candidatos);
+        }
+        catch (Exception ex) {
+            return ResponseEntity.badRequest().body(ex.getCause());
+        }
+
     }
 }

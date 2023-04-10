@@ -14,6 +14,7 @@ public class TesteController {
     @Autowired
     InstituicaoRepository instituicaoRepository;
 
+
     @GetMapping("/buscarInsti")
     public ResponseEntity buscar() {
         Instituicao instituicao = instituicaoRepository.findById(1L).get();

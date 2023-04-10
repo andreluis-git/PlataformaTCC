@@ -1,9 +1,15 @@
 package com.projeto.plataforma.web.controllers;
 
+import com.projeto.plataforma.persistence.dao.AlunoRepository;
+import com.projeto.plataforma.persistence.dao.TemaRepository;
+import com.projeto.plataforma.persistence.model.Aluno;
 import com.projeto.plataforma.persistence.model.Curso;
 import com.projeto.plataforma.persistence.model.Disciplina;
 import com.projeto.plataforma.persistence.dao.DisciplinaRepository;
+import com.projeto.plataforma.persistence.model.Usuario;
+import com.projeto.plataforma.web.util.CurrentUser;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +24,11 @@ public class DisciplinaController {
     @Autowired
     private DisciplinaRepository disciplinaRepository;
 
+    @Autowired
+    private AlunoRepository alunoRepository;
+    @Autowired
+    private CurrentUser currentUser;
+
     @GetMapping("/buscarDisciplina")
     public ResponseEntity<Object> buscarDisciplinaPorId(@RequestParam Long id) {
         return ResponseEntity.ok(disciplinaRepository.findById(id).get());
@@ -31,6 +42,14 @@ public class DisciplinaController {
     @GetMapping("/listarDisciplinas")
     public ResponseEntity<Object> listarDisciplinas() {
         return ResponseEntity.ok(disciplinaRepository.findAll());
+    }
+
+    @GetMapping("/listarDisciplinasPorCurso")
+    public ResponseEntity<Object> listarDisciplinasPorCurso(@RequestHeader HttpHeaders headers) {
+        Usuario user = currentUser.getCurrentUser(headers);
+        Aluno aluno = alunoRepository.findById(user.getId()).get();
+
+        return ResponseEntity.ok(disciplinaRepository.findAllByCursoDisciplinaId(aluno.getCursoAluno().getId()));
     }
 
     @PostMapping("/cadastrarDisciplina")

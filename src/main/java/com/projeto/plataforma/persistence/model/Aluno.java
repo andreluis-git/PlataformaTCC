@@ -11,6 +11,7 @@ import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -21,6 +22,7 @@ import java.util.Set;
 @Entity(name="aluno")
 public class Aluno extends Usuario {
 
+    @Column(columnDefinition="TEXT")
     private String sobre;
     private String whatsapp;
     private String instagram;
@@ -53,4 +55,13 @@ public class Aluno extends Usuario {
     @LazyCollection(LazyCollectionOption.FALSE)
     private List<Tema> candidaturasAluno;
 
+    public void setCandidaturasAluno(List<Tema> candidaturasAluno) {
+        this.candidaturasAluno = candidaturasAluno;
+    }
+
+    public void setCandidaturasAluno(Tema tema) {
+        List<Tema> temas = this.candidaturasAluno;
+        temas.add(tema);
+        this.candidaturasAluno = temas;
+    }
 }

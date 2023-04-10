@@ -53,79 +53,88 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
             return;
         }
 
-        // == create initial privileges
+        // Criação dos privilégios
         final Privilege readPrivilege = createPrivilegeIfNotFound("READ_PRIVILEGE");
         final Privilege writePrivilege = createPrivilegeIfNotFound("WRITE_PRIVILEGE");
         final Privilege passwordPrivilege = createPrivilegeIfNotFound("CHANGE_PASSWORD_PRIVILEGE");
 
-        // == create initial roles
+        // Criação das roles
         final List<Privilege> adminPrivileges = new ArrayList<>(Arrays.asList(readPrivilege, writePrivilege, passwordPrivilege));
         final List<Privilege> userPrivileges = new ArrayList<>(Arrays.asList(readPrivilege, passwordPrivilege));
         final Role adminRole = createRoleIfNotFound("ROLE_ADMIN", adminPrivileges);
         final Role userRole = createRoleIfNotFound("ROLE_USER", adminPrivileges);
         final Role instituicaoRole = createRoleIfNotFound("ROLE_INSTITUICAO", adminPrivileges);
 
-        // == create initial user
+        // Criação de usuários tipo User e Instituição
         createUserIfNotFound("admin@email.com", "Admin", "senha", new ArrayList<>(Arrays.asList(adminRole)));
         createUserIfNotFound("user@email.com", "User", "senha", new ArrayList<>(Arrays.asList(userRole)));
         Instituicao instituicao1 = createInstituicaoIfNotFound("instituicaoFatec@email.com", "InstituicaoFatec", "senha", new ArrayList<>(Arrays.asList(instituicaoRole)));
         Instituicao instituicao2 = createInstituicaoIfNotFound("instituicaoUSP@email.com", "InstituicaoUSP", "senha", new ArrayList<>(Arrays.asList(instituicaoRole)));
 
-        // create initial cursos
+        // Criação de cursos
         Curso cursoADS = createCursoIfNotFound("Analise e desenvolvimento de sistemas", "ADS", instituicao1);
         Curso cursoGE = createCursoIfNotFound("Gestão empresarial", "GE", instituicao1);
         Curso cursoGA = createCursoIfNotFound("Gestão ambiental", "GA", instituicao2);
 
-        // create initial disciplinas
-        Disciplina disciplinaADS1 = createDisciplinaIfNotFound("Estrutura de dados", "ED", cursoADS);
-        Disciplina disciplinaADS2 = createDisciplinaIfNotFound("Programacao orientada a objetos", "POO", cursoADS);
-        Disciplina disciplinaGE1 = createDisciplinaIfNotFound("Sociedade tecnologia e inovacao", "STI", cursoGE);
-        Disciplina disciplinaGA1 = createDisciplinaIfNotFound("Conservacao do meio ambiente", "CMA", cursoGA);
+        Disciplina  disciplinaAds = new Disciplina();
+        Disciplina  disciplinaGe = new Disciplina();
+        Disciplina  disciplinaGa = new Disciplina();
 
-        //create initial alunos
-        for (int i = 0; i < 40; i++) {
-            Aluno aluno = new Aluno();
-            aluno.setEmail("aluno"+i+"@email.com");
-            aluno.setNome("Aluno"+i);
-            aluno.setPassword("senha");
-
-            if (i <= 20) {
-                aluno.setCursoAluno(cursoADS);
-                if (i < 10) {
-                    aluno.setDisciplinasInteresse(new ArrayList<>(Arrays.asList(disciplinaADS1)));
-                }
-                else {
-                    aluno.setDisciplinasInteresse(new ArrayList<>(Arrays.asList(disciplinaADS2)));
-                }
-            } else if (i <= 30){
-                aluno.setCursoAluno(cursoGE);
-                aluno.setDisciplinasInteresse(new ArrayList<>(Arrays.asList(disciplinaGE1)));
-            } else {
-                aluno.setCursoAluno(cursoGA);
-                aluno.setDisciplinasInteresse(new ArrayList<>(Arrays.asList(disciplinaGA1)));
+        // Criação de disciplinas
+        if (disciplinaRepository.findByNome("Curso 0").orElse(null) == null) {
+            for (int i = 0; i < 20; i++) {
+                disciplinaAds = createDisciplinaIfNotFound("Disciplina ADS"+ i, "DiscADS" + i, cursoADS);
             }
-
-            aluno = createAlunoIfNotFound(aluno, new ArrayList<>(Arrays.asList(userRole)));
-
-            if (aluno.getId() == 15 && temaRepository.findByTitulo("Um titulo qualquer 0").orElse(null) == null) {
-                for (int j = 0; j < 25; j++) {
-                    Tema tema = new Tema();
-                    tema.setCriadorTema(aluno);
-                    tema.setTitulo("Um titulo qualquer " + j);
-                    tema.setDescricao("Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.");
-                    tema.setCursoTema(aluno.getCursoAluno());
-                    tema.setDisciplinasRelacionadas(new ArrayList<>(Arrays.asList(disciplinaADS1)));
-
-                    Date date = Calendar.getInstance().getTime();
-                    DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                    String strDate = dateFormat.format(date);
-
-                    tema.setDataCriacao(strDate);
-
-                    temaRepository.save(tema);
-                }
+            for (int i = 0; i < 2; i++) {
+                disciplinaGe = createDisciplinaIfNotFound("Disciplina GE"+ i, "DiscGE" + i, cursoGE);
+                disciplinaGa = createDisciplinaIfNotFound("Disciplina GA"+ i, "DiscGA" + i, cursoGA);
             }
         }
+
+        //Criação de alunos
+        if (usuarioRepository.findByEmail("aluno0@email.com").orElse(null) == null) {
+            for (int i = 0; i < 40; i++) {
+                Aluno aluno = new Aluno();
+                aluno.setEmail("aluno"+i+"@email.com");
+                aluno.setNome("Aluno"+i);
+                aluno.setPassword("senha");
+                if (i <= 30) {
+                    aluno.setCursoAluno(cursoADS);
+                    aluno.setDisciplinasInteresse(new ArrayList<>(Arrays.asList(disciplinaAds)));
+                } else if (i <= 35){
+                    aluno.setCursoAluno(cursoGE);
+                    aluno.setDisciplinasInteresse(new ArrayList<>(Arrays.asList(disciplinaGa)));
+                } else {
+                    aluno.setCursoAluno(cursoGA);
+                    aluno.setDisciplinasInteresse(new ArrayList<>(Arrays.asList(disciplinaGa)));
+                }
+
+                createAlunoIfNotFound(aluno, new ArrayList<>(Arrays.asList(userRole)));
+            }
+        }
+
+        if (temaRepository.findByTitulo("Um titulo qualquer 0").orElse(null) == null) {
+
+            Aluno aluno = alunoRepository.findByEmail("aluno0@email.com").get();
+
+            for (int i = 0; i < 20; i++) {
+                Tema tema = new Tema();
+                tema.setCriadorTema(aluno);
+                tema.setTitulo("Um titulo qualquer " + i);
+                tema.setDescricao("Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.");
+                tema.setCursoTema(aluno.getCursoAluno());
+                tema.setDisciplinasRelacionadas(new ArrayList<>(Arrays.asList(disciplinaAds)));
+
+                Date date = Calendar.getInstance().getTime();
+                DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                String strDate = dateFormat.format(date);
+
+                tema.setDataCriacao(strDate);
+
+                createTemaIfNotFound(tema);
+            }
+        }
+
 
         alreadySetup = true;
     }
@@ -209,6 +218,16 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
             alunoBanco = alunoRepository.save(alunoBanco);
         }
         return alunoBanco;
+    }
+
+    @Transactional
+    Tema createTemaIfNotFound(final Tema tema) {
+        Tema temaBanco = temaRepository.findByTitulo(tema.getTitulo()).orElse(null);
+
+        if (temaBanco == null) {
+            temaBanco = temaRepository.save(tema);
+        }
+        return temaBanco;
     }
 
     @Transactional

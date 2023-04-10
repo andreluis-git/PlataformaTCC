@@ -56,6 +56,7 @@ public class Tema {
     private Curso cursoTema;
     @ManyToMany(mappedBy = "candidaturasAluno", cascade = CascadeType.ALL)
     @Cascade(value = org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
+    @LazyCollection(LazyCollectionOption.FALSE)
     @JsonBackReference
     private List<Aluno> candidatosTema;
 

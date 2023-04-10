@@ -1,9 +1,11 @@
 package com.projeto.plataforma.persistence.dao;
 
 import com.projeto.plataforma.persistence.model.Aluno;
+import com.projeto.plataforma.persistence.model.Tema;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -15,5 +17,7 @@ public interface AlunoRepository extends JpaRepository<Aluno, Long> {
             "JOIN FETCH u.disciplinasInteresse d \n" +
             "where u.id = :id")
     Aluno findAlunoQuery(@Param("id") Long id);
+
+    List<Aluno> findAllByCandidaturasAlunoId(Long id);
 
 }
