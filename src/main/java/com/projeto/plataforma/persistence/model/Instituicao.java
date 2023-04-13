@@ -18,7 +18,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Entity(name="Instituicao")
 public class Instituicao extends Usuario {
-    @OneToMany(mappedBy = "instituicaoCurso", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "instituicaoCurso", cascade = CascadeType.MERGE, orphanRemoval = true)
     @JsonIgnore
     @JsonManagedReference
     List<Curso> cursosInstituicao;

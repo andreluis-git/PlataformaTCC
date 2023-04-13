@@ -36,7 +36,7 @@ public class Tema {
     private Boolean ativo = true;
     @NotNull
     private String dataCriacao;
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.MERGE)
     @JoinTable(
         name = "temaDisciplina",
         joinColumns = @JoinColumn(name = "temaId"),
@@ -54,7 +54,7 @@ public class Tema {
     @NotNull
     @JsonBackReference
     private Curso cursoTema;
-    @ManyToMany(mappedBy = "candidaturasAluno", cascade = CascadeType.ALL)
+    @ManyToMany(mappedBy = "candidaturasAluno", cascade = CascadeType.MERGE)
     @Cascade(value = org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
     @LazyCollection(LazyCollectionOption.FALSE)
     @JsonBackReference

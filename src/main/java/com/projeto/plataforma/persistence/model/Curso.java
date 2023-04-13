@@ -33,15 +33,15 @@ public class Curso {
     @JsonBackReference
     private Instituicao instituicaoCurso;
 
-    @OneToMany(mappedBy = "cursoDisciplina", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "cursoDisciplina", cascade = CascadeType.MERGE, orphanRemoval = true)
     @JsonIgnore
     private List<Disciplina> disciplinasCurso;
 
-    @OneToMany(mappedBy = "cursoAluno", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "cursoAluno", cascade = CascadeType.MERGE, orphanRemoval = true)
     @JsonIgnore
     private List<Aluno> alunosCurso;
 
-    @OneToMany(mappedBy = "cursoTema", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "cursoTema", cascade = CascadeType.MERGE, orphanRemoval = true)
     @JsonIgnore
     private List<Tema> temasCurso;
 

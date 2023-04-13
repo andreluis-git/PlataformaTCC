@@ -33,7 +33,7 @@ public class Aluno extends Usuario {
     @NotNull
     private Curso cursoAluno;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.MERGE)
     @JoinTable(
             name = "alunoDisciplina",
             joinColumns = @JoinColumn(name = "alunoId"),
@@ -42,11 +42,11 @@ public class Aluno extends Usuario {
     @LazyCollection(LazyCollectionOption.FALSE)
     private List<Disciplina> disciplinasInteresse;
 
-    @OneToMany(mappedBy = "criadorTema", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "criadorTema", cascade = CascadeType.MERGE, orphanRemoval = true)
     @JsonIgnore
     private List<Tema> temasAluno;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.MERGE)
     @JoinTable(
             name = "alunoCandidaturas",
             joinColumns = @JoinColumn(name = "alunoId"),
