@@ -4,6 +4,7 @@ import com.projeto.plataforma.persistence.model.Usuario;
 import com.projeto.plataforma.persistence.dao.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +20,7 @@ public class UsuarioController {
     @Autowired
     private PasswordEncoder encoder;
 
-    @PostMapping("/cadastrarUsuario")
+    @PostMapping(value = "/cadastrarUsuario", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> cadastrarUsuario(@RequestBody Usuario usuario) {
 
         try {

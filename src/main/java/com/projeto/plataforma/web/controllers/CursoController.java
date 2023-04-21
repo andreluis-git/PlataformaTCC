@@ -4,6 +4,7 @@ import com.projeto.plataforma.persistence.dao.CursoRepository;
 import com.projeto.plataforma.persistence.model.Curso;
 import com.projeto.plataforma.web.dto.CursoDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -31,7 +32,7 @@ public class CursoController {
         return ResponseEntity.ok(cursoRepository.findAll());
     }
 
-    @PostMapping("/cadastrarCurso")
+    @PostMapping(value = "/cadastrarCurso", consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_INSTITUICAO')")
     public ResponseEntity<Object> cadastrarCurso(@RequestBody CursoDTO cursoDTO) {
         try {
@@ -47,7 +48,7 @@ public class CursoController {
         }
     }
 
-    @PutMapping("/editarCurso")
+    @PutMapping(value = "/editarCurso", consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_INSTITUICAO')")
     public ResponseEntity<Object> editarCurso(@RequestBody Curso curso) {
         try {

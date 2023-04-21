@@ -10,6 +10,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TemaDTO {
+    private Long id;
     private String titulo;
     private String descricao;
     private List<DisciplinaDTO> disciplinasRelacionadas;

@@ -4,6 +4,7 @@ import com.projeto.plataforma.persistence.dao.*;
 import com.projeto.plataforma.persistence.model.*;
 import org.apache.catalina.LifecycleState;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -66,7 +67,7 @@ public class InstituicaoController {
         }
     }
 
-    @PostMapping("/cadastrarInstituicao")
+    @PostMapping(value = "/cadastrarInstituicao", consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<Object> cadastrarInstituicao(@RequestBody Instituicao instituicao) {
 
@@ -79,7 +80,7 @@ public class InstituicaoController {
         }
     }
 
-    @PutMapping("/editarInstituicao")
+    @PutMapping(value = "/editarInstituicao", consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     public ResponseEntity<Object> editarInstituicao(@RequestBody Instituicao instituicao) {
         try {

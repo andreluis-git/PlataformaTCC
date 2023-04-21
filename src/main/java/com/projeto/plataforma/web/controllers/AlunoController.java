@@ -1,14 +1,18 @@
 package com.projeto.plataforma.web.controllers;
 
 import com.projeto.plataforma.persistence.dao.AlunoRepository;
+import com.projeto.plataforma.persistence.dao.DisciplinaRepository;
 import com.projeto.plataforma.persistence.model.Aluno;
 import com.projeto.plataforma.persistence.model.Disciplina;
 import com.projeto.plataforma.persistence.model.Tema;
 import com.projeto.plataforma.persistence.model.Usuario;
+import com.projeto.plataforma.web.dto.AlunoDTO;
+import com.projeto.plataforma.web.dto.DisciplinaDTO;
 import com.projeto.plataforma.web.util.CurrentUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -24,6 +28,8 @@ public class AlunoController {
 
     @Autowired
     private AlunoRepository alunoRepository;
+    @Autowired
+    private DisciplinaRepository disciplinaRepository;
     @Autowired
     private PasswordEncoder encoder;
 
@@ -54,7 +60,7 @@ public class AlunoController {
         }
     }
 
-    @PostMapping("/cadastrarAluno")
+    @PostMapping(value = "/cadastrarAluno", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> cadastrarAluno(@RequestBody Aluno aluno) {
 
         try {
@@ -66,22 +72,24 @@ public class AlunoController {
         }
     }
 
-    @PutMapping("/editarAluno")
-    public ResponseEntity<Object> editarAluno(@RequestHeader HttpHeaders headers, @RequestBody Aluno aluno) {
+    @PutMapping(value = "/editarAluno", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Object> editarAluno(@RequestHeader HttpHeaders headers, @RequestBody AlunoDTO alunoDTO) {
         try {
-            Optional<Aluno> optAluno = alunoRepository.findById(aluno.getId());
+            Optional<Aluno> optAluno = alunoRepository.findById(alunoDTO.getId());
             if(optAluno.isEmpty()) {
                 return ResponseEntity.badRequest().build();
             }
 
             Aluno alunoDb = optAluno.get();
 
-            alunoDb.setDisciplinasInteresse(aluno.getDisciplinasInteresse());
-            alunoDb.setSobre(aluno.getSobre());
-            alunoDb.setLinkedin(aluno.getLinkedin());
-            alunoDb.setInstagram(aluno.getInstagram());
-            alunoDb.setFacebook(aluno.getFacebook());
-            alunoDb.setWhatsapp(aluno.getWhatsapp());
+            List<Long> disciplinaIds = alunoDTO.getDisciplinasInteresse().stream().map(DisciplinaDTO::getId).collect(Collectors.toList());
+            List<Disciplina> disciplinasInteresse = disciplinaRepository.findAllByIdIn(disciplinaIds);
+            alunoDb.setDisciplinasInteresse(disciplinasInteresse);
+            alunoDb.setSobre(alunoDTO.getSobre());
+            alunoDb.setLinkedin(alunoDTO.getLinkedin());
+            alunoDb.setInstagram(alunoDTO.getInstagram());
+            alunoDb.setFacebook(alunoDTO.getFacebook());
+            alunoDb.setWhatsapp(alunoDTO.getWhatsapp());
 
             alunoRepository.save(alunoDb);
 

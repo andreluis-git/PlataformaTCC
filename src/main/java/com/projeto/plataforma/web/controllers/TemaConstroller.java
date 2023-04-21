@@ -49,27 +49,39 @@ public class TemaConstroller {
         }
     }
 
-    @GetMapping("/buscarTemasPorTitulo")
-    public ResponseEntity<Object> buscarTemasPorTitulo(@RequestParam String titulo) {
+    @GetMapping("/buscarTemasPorTituloOuDescricao")
+    public ResponseEntity<Object> buscarTemasPorTituloOuDescricao(@RequestHeader HttpHeaders headers, @RequestParam String texto) {
 
         try {
-            return ResponseEntity.ok(temaRepository.findAllByTituloContainsOrderByIdDesc(titulo));
+            Usuario user = currentUser.getCurrentUser(headers);
+            return ResponseEntity.ok(temaRepository.findAllByTituloAndDescricaoQuery(texto, user.getId()));
         }
         catch (Exception ex) {
             return ResponseEntity.badRequest().build();
         }
     }
 
-    @GetMapping("/buscarTemasAnunciadosPorTitulo")
-    public ResponseEntity<Object> buscarTemaPorTitulo(@RequestHeader HttpHeaders headers, @RequestParam String titulo) {
+    @GetMapping("/buscarTemasAnunciadosPorTituloOuDescricao")
+    public ResponseEntity<Object> buscarTemasAnunciadosPorTituloOuDescricao(@RequestHeader HttpHeaders headers, @RequestParam String texto) {
 
         try {
             Usuario user = currentUser.getCurrentUser(headers);
-            Aluno aluno = alunoRepository.findById(user.getId()).get();
 
-            List<Tema> temas = temaRepository.findAllByCriadorTemaIdAndTituloOrderByIdDesc(aluno.getId(), titulo);
+            List<Tema> temas = temaRepository.findAllAnunciadosByTituloAndDescricaoQuery(texto, user.getId());
 
             return ResponseEntity.ok(temas);
+        }
+        catch (Exception ex) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @GetMapping("/buscarTemasCandidaturasPorTituloOuDescricao")
+    public ResponseEntity<Object> buscarTemasCandidaturasPorTituloOuDescricao(@RequestHeader HttpHeaders headers, @RequestParam String texto) {
+
+        try {
+            Usuario user = currentUser.getCurrentUser(headers);
+            return ResponseEntity.ok(temaRepository.findAllCandidaturasByTituloAndDescricaoQuery(texto, user.getId()));
         }
         catch (Exception ex) {
             return ResponseEntity.badRequest().build();
@@ -85,7 +97,7 @@ public class TemaConstroller {
 
             List<Long> disciplinaIds = aluno.getDisciplinasInteresse().stream().map(Disciplina::getId).collect(Collectors.toList());
 
-            List<Tema> temas = temaRepository.findAllByDisciplinasRelacionadasIdInOrderByIdDesc(disciplinaIds);
+            List<Tema> temas = temaRepository.findAllTemasQuery(disciplinaIds, aluno.getId());
 
             return ResponseEntity.ok(temas);
         }
@@ -179,13 +191,21 @@ public class TemaConstroller {
         }
     }
 
-    @PostMapping("/editarTema")
-    public ResponseEntity<Object> editarTema(@RequestBody Tema tema) {
+    @PutMapping(value="/editarTema", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Object> editarTema(@RequestBody TemaDTO temaDTO) {
 
         try {
-            if(tema == null) {
+            if(temaDTO == null) {
                 return ResponseEntity.badRequest().build();
             }
+
+            Tema tema = temaRepository.findById(temaDTO.getId()).get();
+            tema.setTitulo(temaDTO.getTitulo());
+            tema.setDescricao(temaDTO.getDescricao());
+            List<Long> disciplinaIds = temaDTO.getDisciplinasRelacionadas().stream().map(DisciplinaDTO::getId).collect(Collectors.toList());
+            List<Disciplina> disciplinasRelacionadas = disciplinaRepository.findAllByIdIn(disciplinaIds);
+            tema.setDisciplinasRelacionadas(disciplinasRelacionadas);
+
             tema = temaRepository.save(tema);
 
             return ResponseEntity.ok(tema);
@@ -202,7 +222,7 @@ public class TemaConstroller {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/candidatarTema")
+    @PostMapping(value = "/candidatarTema", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> candidatarTema(@RequestHeader HttpHeaders headers, @RequestParam Long temaId) {
 
         try {

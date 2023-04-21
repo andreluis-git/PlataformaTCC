@@ -10,6 +10,7 @@ import com.projeto.plataforma.persistence.model.Usuario;
 import com.projeto.plataforma.web.util.CurrentUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -52,7 +53,7 @@ public class DisciplinaController {
         return ResponseEntity.ok(disciplinaRepository.findAllByCursoDisciplinaId(aluno.getCursoAluno().getId()));
     }
 
-    @PostMapping("/cadastrarDisciplina")
+    @PostMapping(value = "/cadastrarDisciplina", consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_INSTITUICAO')")
     public ResponseEntity<Object> cadastrarDisciplina(@RequestBody Disciplina disciplina) {
         try {
