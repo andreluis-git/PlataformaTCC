@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import javax.persistence.*;
 import java.util.Collection;
+import java.util.Set;
 
 @Entity
 public class Privilege {
@@ -16,7 +17,7 @@ public class Privilege {
 
     @ManyToMany(mappedBy = "privileges")
     @JsonBackReference
-    private Collection<Role> roles;
+    private Set<Role> roles;
 
     public Privilege() {
         super();
@@ -49,7 +50,7 @@ public class Privilege {
         return roles;
     }
 
-    public void setRoles(final Collection<Role> roles) {
+    public void setRoles(final Set<Role> roles) {
         this.roles = roles;
     }
 

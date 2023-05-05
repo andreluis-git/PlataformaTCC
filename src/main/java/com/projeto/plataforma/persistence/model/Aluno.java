@@ -41,15 +41,27 @@ public class Aluno extends Usuario {
             inverseJoinColumns = @JoinColumn(name = "disciplinaId"))
     @Cascade(value = org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
     @LazyCollection(LazyCollectionOption.FALSE)
-    private List<Disciplina> disciplinasInteresse;
+    private Set<Disciplina> disciplinasInteresse;
 
-    @OneToMany(mappedBy = "criadorTema", cascade = CascadeType.MERGE, orphanRemoval = true)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "criadorTema", cascade = CascadeType.MERGE, orphanRemoval = true)
     @JsonIgnore
     private List<Tema> temasAluno;
 
     @ManyToMany(mappedBy = "candidatosTema")
     @LazyCollection(LazyCollectionOption.FALSE)
     @JsonBackReference
-    private List<Tema> candidaturasAluno;
+    private Set<Tema> candidaturasAluno;
+
+    public void adicionarDisciplinaAluno(Disciplina disciplina) {
+        Set<Disciplina> disciplinas = this.disciplinasInteresse;
+        disciplinas.add(disciplina);
+        this.disciplinasInteresse = disciplinas;
+    }
+
+    public void removerDisciplinaAluno(Disciplina disciplina) {
+        Set<Disciplina> disciplinas = this.disciplinasInteresse;
+        disciplinas.removeIf(e -> e.getId().equals(disciplina.getId()));
+        this.disciplinasInteresse = disciplinas;
+    }
 
 }

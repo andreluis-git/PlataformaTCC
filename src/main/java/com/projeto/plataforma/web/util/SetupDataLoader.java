@@ -59,17 +59,17 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
         final Privilege passwordPrivilege = createPrivilegeIfNotFound("CHANGE_PASSWORD_PRIVILEGE");
 
         // Criação das roles
-        final List<Privilege> adminPrivileges = new ArrayList<>(Arrays.asList(readPrivilege, writePrivilege, passwordPrivilege));
-        final List<Privilege> userPrivileges = new ArrayList<>(Arrays.asList(readPrivilege, passwordPrivilege));
+        final Set<Privilege> adminPrivileges = new HashSet<>(Arrays.asList(readPrivilege, writePrivilege, passwordPrivilege));
+        final Set<Privilege> userPrivileges = new HashSet<>(Arrays.asList(readPrivilege, passwordPrivilege));
         final Role adminRole = createRoleIfNotFound("ROLE_ADMIN", adminPrivileges);
         final Role userRole = createRoleIfNotFound("ROLE_USER", adminPrivileges);
         final Role instituicaoRole = createRoleIfNotFound("ROLE_INSTITUICAO", adminPrivileges);
 
         // Criação de usuários tipo User e Instituição
-        createUserIfNotFound("admin@email.com", "Admin", "senha", new ArrayList<>(Arrays.asList(adminRole)));
-        createUserIfNotFound("user@email.com", "User", "senha", new ArrayList<>(Arrays.asList(userRole)));
-        Instituicao instituicao1 = createInstituicaoIfNotFound("instituicaoFatec@email.com", "InstituicaoFatec", "senha", new ArrayList<>(Arrays.asList(instituicaoRole)));
-        Instituicao instituicao2 = createInstituicaoIfNotFound("instituicaoUSP@email.com", "InstituicaoUSP", "senha", new ArrayList<>(Arrays.asList(instituicaoRole)));
+        createUserIfNotFound("admin@email.com", "Admin", "senha", new HashSet<>(Arrays.asList(adminRole)));
+        createUserIfNotFound("user@email.com", "User", "senha", new HashSet<>(Arrays.asList(userRole)));
+        Instituicao instituicao1 = createInstituicaoIfNotFound("instituicaoFatec@email.com", "InstituicaoFatec", "senha", new HashSet<>(Arrays.asList(instituicaoRole)));
+        Instituicao instituicao2 = createInstituicaoIfNotFound("instituicaoUSP@email.com", "InstituicaoUSP", "senha", new HashSet<>(Arrays.asList(instituicaoRole)));
 
         // Criação de cursos
         Curso cursoADS = createCursoIfNotFound("Analise e desenvolvimento de sistemas", "ADS", instituicao1);
@@ -100,16 +100,16 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
                 aluno.setPassword("senha");
                 if (i <= 30) {
                     aluno.setCursoAluno(cursoADS);
-                    aluno.setDisciplinasInteresse(new ArrayList<>(Arrays.asList(disciplinaAds)));
+                    aluno.setDisciplinasInteresse(new HashSet<>(Arrays.asList(disciplinaAds)));
                 } else if (i <= 35){
                     aluno.setCursoAluno(cursoGE);
-                    aluno.setDisciplinasInteresse(new ArrayList<>(Arrays.asList(disciplinaGa)));
+                    aluno.setDisciplinasInteresse(new HashSet<>(Arrays.asList(disciplinaGa)));
                 } else {
                     aluno.setCursoAluno(cursoGA);
-                    aluno.setDisciplinasInteresse(new ArrayList<>(Arrays.asList(disciplinaGa)));
+                    aluno.setDisciplinasInteresse(new HashSet<>(Arrays.asList(disciplinaGa)));
                 }
 
-                createAlunoIfNotFound(aluno, new ArrayList<>(Arrays.asList(userRole)));
+                createAlunoIfNotFound(aluno, new HashSet<>(Arrays.asList(userRole)));
             }
         }
 
@@ -123,7 +123,7 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
                 tema.setTitulo("Um titulo qualquer " + i);
                 tema.setDescricao("Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.");
                 tema.setCursoTema(aluno.getCursoAluno());
-                tema.setDisciplinasRelacionadas(new ArrayList<>(Arrays.asList(disciplinaAds)));
+                tema.setDisciplinasRelacionadas(new HashSet<>(Arrays.asList(disciplinaAds)));
 
                 Date date = Calendar.getInstance().getTime();
                 DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -150,7 +150,7 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
     }
 
     @Transactional
-    Role createRoleIfNotFound(final String name, final Collection<Privilege> privileges) {
+    Role createRoleIfNotFound(final String name, final Set<Privilege> privileges) {
         Role role = roleRepository.findByName(name);
         if (role == null) {
             role = new Role(name);
@@ -161,7 +161,7 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
     }
 
     @Transactional
-    Usuario createUserIfNotFound(final String email, final String firstName, final String password, final Collection<Role> roles) {
+    Usuario createUserIfNotFound(final String email, final String firstName, final String password, final Set<Role> roles) {
         Usuario user = usuarioRepository.findByEmail(email).orElse(null);
         if (user == null) {
             user = new Usuario();
@@ -207,7 +207,7 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
     }
 
     @Transactional
-    Aluno createAlunoIfNotFound(final Aluno aluno, final Collection<Role> roles) {
+    Aluno createAlunoIfNotFound(final Aluno aluno, final Set<Role> roles) {
         Aluno alunoBanco = alunoRepository.findByEmail(aluno.getEmail()).orElse(null);
 
         if (alunoBanco == null) {
@@ -231,7 +231,7 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
     }
 
     @Transactional
-    Instituicao createInstituicaoIfNotFound(final String email, final String firstName, final String password, final Collection<Role> roles) {
+    Instituicao createInstituicaoIfNotFound(final String email, final String firstName, final String password, final Set<Role> roles) {
         Instituicao instituicaoBanco = instituicaoRepository.findByEmail(email).orElse(null);
 
         if (instituicaoBanco == null) {

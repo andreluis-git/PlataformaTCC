@@ -11,6 +11,7 @@ import org.hibernate.annotations.LazyCollectionOption;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -37,11 +38,8 @@ public class Tema {
         name = "temaDisciplina",
         joinColumns = @JoinColumn(name = "temaId"),
         inverseJoinColumns = @JoinColumn(name = "disciplinaId"))
-//    @Cascade(value = org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
-//    @ToString.Exclude
-//    @NotNull
     @LazyCollection(LazyCollectionOption.FALSE)
-    private List<Disciplina> disciplinasRelacionadas;
+    private Set<Disciplina> disciplinasRelacionadas;
 
     @ManyToOne
     @NotNull
@@ -50,25 +48,35 @@ public class Tema {
     @NotNull
     @JsonBackReference
     private Curso cursoTema;
-    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.REMOVE, CascadeType.PERSIST})
+    @ManyToMany(cascade = {CascadeType.MERGE})
     @JoinTable(
             name = "temaCandidatos",
             joinColumns = @JoinColumn(name = "alunoId"),
             inverseJoinColumns = @JoinColumn(name = "temaId"))
-//    @Cascade(value = org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
     @LazyCollection(LazyCollectionOption.FALSE)
-    private List<Aluno> candidatosTema;
+    private Set<Aluno> candidatosTema;
 
     public void adicionarCandidatoTema(Aluno aluno) {
-        List<Aluno> alunos = this.candidatosTema;
+        Set<Aluno> alunos = this.candidatosTema;
         alunos.add(aluno);
         this.candidatosTema = alunos;
     }
 
     public void removerCandidatoTema(Aluno aluno) {
-        List<Aluno> alunos = this.candidatosTema;
+        Set<Aluno> alunos = this.candidatosTema;
         alunos.removeIf(e -> e.getId().equals(aluno.getId()));
         this.candidatosTema = alunos;
     }
 
+    public void adicionarDisciplinaTema(Disciplina disciplina) {
+        Set<Disciplina> disciplinas = this.disciplinasRelacionadas;
+        disciplinas.add(disciplina);
+        this.disciplinasRelacionadas = disciplinas;
+    }
+
+    public void removerDisciplinaTema(Disciplina disciplina) {
+        Set<Disciplina> disciplinas = this.disciplinasRelacionadas;
+        disciplinas.removeIf(e -> e.getId().equals(disciplina.getId()));
+        this.disciplinasRelacionadas = disciplinas;
+    }
 }

@@ -172,7 +172,7 @@ public class TemaController {
             tema.setTitulo(temaDTO.getTitulo());
             tema.setDescricao(temaDTO.getDescricao());
             List<Long> disciplinaIds = temaDTO.getDisciplinasRelacionadas().stream().map(DisciplinaDTO::getId).collect(Collectors.toList());
-            List<Disciplina> disciplinasRelacionadas = disciplinaRepository.findAllByIdIn(disciplinaIds);
+            Set<Disciplina> disciplinasRelacionadas = disciplinaRepository.findAllByIdIn(disciplinaIds);
             tema.setDisciplinasRelacionadas(disciplinasRelacionadas);
             tema.setCursoTema(aluno.getCursoAluno());
             tema.setCriadorTema(aluno);
@@ -203,7 +203,7 @@ public class TemaController {
             tema.setTitulo(temaDTO.getTitulo());
             tema.setDescricao(temaDTO.getDescricao());
             List<Long> disciplinaIds = temaDTO.getDisciplinasRelacionadas().stream().map(DisciplinaDTO::getId).collect(Collectors.toList());
-            List<Disciplina> disciplinasRelacionadas = disciplinaRepository.findAllByIdIn(disciplinaIds);
+            Set<Disciplina> disciplinasRelacionadas = disciplinaRepository.findAllByIdIn(disciplinaIds);
             tema.setDisciplinasRelacionadas(disciplinasRelacionadas);
             tema.setAtivo(temaDTO.getAtivo());
 
@@ -220,6 +220,10 @@ public class TemaController {
     public ResponseEntity<Object> deletarTema(@RequestHeader HttpHeaders headers, @PathVariable Long temaId) {
         try {
             Tema tema = temaRepository.findById(temaId).get();
+            tema.setCandidatosTema(new HashSet<>());
+            tema.setDisciplinasRelacionadas(new HashSet<>());
+            temaRepository.save(tema);
+
             temaRepository.deleteById(temaId);
 
             return ResponseEntity.ok().build();

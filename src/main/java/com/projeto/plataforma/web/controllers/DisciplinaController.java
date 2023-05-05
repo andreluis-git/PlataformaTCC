@@ -17,8 +17,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Optional;
 
 @RestController
@@ -111,10 +109,17 @@ public class DisciplinaController {
     public ResponseEntity<Object> deletarDisciplina(@PathVariable Long disciplinaId) {
         try {
             Disciplina disciplina = disciplinaRepository.findById(disciplinaId).get();
-            disciplina.setTemasDisciplina(new ArrayList<>());
-            disciplina.setAlunosDisciplina(new ArrayList<>());
-            disciplinaRepository.save(disciplina);
-//            disciplinaRepository.deleteById(disciplinaId);
+            for (Tema tema : disciplina.getTemasDisciplina()) {
+                tema.removerDisciplinaTema(disciplina);
+                temaRepository.save(tema);
+            }
+
+            for (Aluno aluno : disciplina.getAlunosDisciplina()) {
+                aluno.removerDisciplinaAluno(disciplina);
+                alunoRepository.save(aluno);
+            }
+
+            disciplinaRepository.deleteById(disciplinaId);
 
             return  ResponseEntity.ok().build();
         }

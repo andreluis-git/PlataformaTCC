@@ -6,6 +6,7 @@ import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import java.util.Collection;
+import java.util.Set;
 
 @Entity
 public class Role {
@@ -15,15 +16,16 @@ public class Role {
     private Long id;
 
     @ManyToMany(mappedBy = "roles")
+    @LazyCollection(LazyCollectionOption.FALSE)
     @JsonBackReference
-    private Collection<Usuario> users;
+    private Set<Usuario> users;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany
     @JoinTable(name = "roles_privileges",
             joinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "privilege_id", referencedColumnName = "id"))
     @LazyCollection(LazyCollectionOption.FALSE)
-    private Collection<Privilege> privileges;
+    private Set<Privilege> privileges;
 
     private String name;
 
@@ -58,7 +60,7 @@ public class Role {
         return users;
     }
 
-    public void setUsers(final Collection<Usuario> users) {
+    public void setUsers(final Set<Usuario> users) {
         this.users = users;
     }
 
@@ -66,7 +68,7 @@ public class Role {
         return privileges;
     }
 
-    public void setPrivileges(final Collection<Privilege> privileges) {
+    public void setPrivileges(final Set<Privilege> privileges) {
         this.privileges = privileges;
     }
 

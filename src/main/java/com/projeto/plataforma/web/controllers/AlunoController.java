@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @RestController
@@ -83,7 +84,7 @@ public class AlunoController {
             Aluno alunoDb = optAluno.get();
 
             List<Long> disciplinaIds = alunoDTO.getDisciplinasInteresse().stream().map(DisciplinaDTO::getId).collect(Collectors.toList());
-            List<Disciplina> disciplinasInteresse = disciplinaRepository.findAllByIdIn(disciplinaIds);
+            Set<Disciplina> disciplinasInteresse = disciplinaRepository.findAllByIdIn(disciplinaIds);
             alunoDb.setDisciplinasInteresse(disciplinasInteresse);
             alunoDb.setSobre(alunoDTO.getSobre());
             alunoDb.setLinkedin(alunoDTO.getLinkedin());

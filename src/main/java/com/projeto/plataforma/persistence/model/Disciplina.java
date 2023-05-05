@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -28,12 +30,14 @@ public class Disciplina {
     private String nome;
 
     @ManyToMany(mappedBy = "disciplinasRelacionadas", cascade = {CascadeType.MERGE})
+    @LazyCollection(LazyCollectionOption.FALSE)
     @JsonBackReference
-    private List<Tema> temasDisciplina;
+    private Set<Tema> temasDisciplina;
 
     @ManyToMany(mappedBy = "disciplinasInteresse", cascade = {CascadeType.MERGE})
+    @LazyCollection(LazyCollectionOption.FALSE)
     @JsonBackReference
-    private List<Aluno> alunosDisciplina;
+    private Set<Aluno> alunosDisciplina;
 
     @ManyToOne
     @NotNull
