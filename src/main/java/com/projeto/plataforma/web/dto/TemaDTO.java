@@ -14,5 +14,6 @@ public class TemaDTO {
     private String titulo;
     private String descricao;
     private List<DisciplinaDTO> disciplinasRelacionadas;
+    private Boolean ativo;
 
 }

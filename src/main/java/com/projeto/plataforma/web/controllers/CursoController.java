@@ -2,13 +2,17 @@ package com.projeto.plataforma.web.controllers;
 
 import com.projeto.plataforma.persistence.dao.CursoRepository;
 import com.projeto.plataforma.persistence.model.Curso;
+import com.projeto.plataforma.persistence.model.Usuario;
 import com.projeto.plataforma.web.dto.CursoDTO;
+import com.projeto.plataforma.web.util.CurrentUser;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -16,6 +20,9 @@ import java.util.Optional;
 public class CursoController {
     @Autowired
     private CursoRepository cursoRepository;
+
+    @Autowired
+    private CurrentUser currentUser;
 
     @GetMapping("/buscarCurso")
     public ResponseEntity<Object> buscarCursoPorId(@RequestParam Long id) {
@@ -30,6 +37,13 @@ public class CursoController {
     @GetMapping("/listarCursos")
     public ResponseEntity<Object> listarCursos() {
         return ResponseEntity.ok(cursoRepository.findAll());
+    }
+
+    @GetMapping("/listarCursosPorInstituicao")
+    public ResponseEntity<Object> listarCursosPorInstituicao(@RequestHeader HttpHeaders headers) {
+        Usuario user = currentUser.getCurrentUser(headers);
+        List<Curso> cursos = cursoRepository.findAllByInstituicaoCursoIdOrderByNomeAsc(user.getId());
+        return ResponseEntity.ok(cursos);
     }
 
     @PostMapping(value = "/cadastrarCurso", consumes = MediaType.APPLICATION_JSON_VALUE)

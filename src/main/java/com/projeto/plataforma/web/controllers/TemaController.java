@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/tema")
-public class TemaConstroller {
+public class TemaController {
 
     @Autowired
     private AlunoRepository alunoRepository;
@@ -205,6 +205,7 @@ public class TemaConstroller {
             List<Long> disciplinaIds = temaDTO.getDisciplinasRelacionadas().stream().map(DisciplinaDTO::getId).collect(Collectors.toList());
             List<Disciplina> disciplinasRelacionadas = disciplinaRepository.findAllByIdIn(disciplinaIds);
             tema.setDisciplinasRelacionadas(disciplinasRelacionadas);
+            tema.setAtivo(temaDTO.getAtivo());
 
             tema = temaRepository.save(tema);
 
@@ -215,11 +216,16 @@ public class TemaConstroller {
         }
     }
 
-    @DeleteMapping("/deletarTema")
-    public ResponseEntity<Object> deletarTema(@RequestHeader HttpHeaders headers, @RequestParam Long temaId) {
-        temaRepository.deleteById(temaId);
+    @DeleteMapping("/deletarTema/{temaId}")
+    public ResponseEntity<Object> deletarTema(@RequestHeader HttpHeaders headers, @PathVariable Long temaId) {
+        try {
+            Tema tema = temaRepository.findById(temaId).get();
+            temaRepository.deleteById(temaId);
 
-        return ResponseEntity.ok().build();
+            return ResponseEntity.ok().build();
+        } catch (Exception ex) {
+            return ResponseEntity.badRequest().body(ex.getCause());
+        }
     }
 
     @PostMapping(value = "/candidatarTema", consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -239,9 +245,38 @@ public class TemaConstroller {
                 return ResponseEntity.badRequest().body("Tema já candidatado");
             }
 
-            aluno.setCandidaturasAluno(temaBanco);
+            temaBanco.adicionarCandidatoTema(aluno);
 
-            alunoRepository.save(aluno);
+            temaRepository.save(temaBanco);
+
+            return ResponseEntity.ok().build();
+        }
+        catch (Exception ex) {
+            return ResponseEntity.badRequest().body(ex.getCause());
+        }
+
+    }
+
+    @PostMapping(value = "/removerCandidaturaTema", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Object> removerCandidaturaTema(@RequestHeader HttpHeaders headers, @RequestParam Long temaId) {
+
+        try {
+            Usuario user = currentUser.getCurrentUser(headers);
+            Aluno aluno = alunoRepository.findById(user.getId()).get();
+
+            Tema temaBanco = temaRepository.findById(temaId).orElse(null);
+
+            if (temaBanco == null) {
+                return ResponseEntity.badRequest().body("Tema não encontrado");
+            }
+
+            if (!aluno.getCandidaturasAluno().stream().map(Tema::getId).filter(temaId::equals).findFirst().isPresent()) {
+                return ResponseEntity.badRequest().body("Aluno não é candidato do tema");
+            }
+
+            temaBanco.removerCandidatoTema(aluno);
+
+            temaRepository.save(temaBanco);
 
             return ResponseEntity.ok().build();
         }

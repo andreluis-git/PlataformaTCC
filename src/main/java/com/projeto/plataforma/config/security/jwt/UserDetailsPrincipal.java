@@ -50,4 +50,5 @@ public class UserDetailsPrincipal implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return this.usuario.get().getRoles().stream().map(role -> new SimpleGrantedAuthority(role.getName())).collect(Collectors.toList());
     }
+
 }

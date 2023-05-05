@@ -27,11 +27,11 @@ public class Disciplina {
     @NotNull
     private String nome;
 
-    @ManyToMany(mappedBy = "disciplinasRelacionadas", cascade = CascadeType.MERGE)
+    @ManyToMany(mappedBy = "disciplinasRelacionadas", cascade = {CascadeType.MERGE})
     @JsonBackReference
     private List<Tema> temasDisciplina;
 
-    @ManyToMany(mappedBy = "disciplinasInteresse", cascade = CascadeType.MERGE)
+    @ManyToMany(mappedBy = "disciplinasInteresse", cascade = {CascadeType.MERGE})
     @JsonBackReference
     private List<Aluno> alunosDisciplina;
 

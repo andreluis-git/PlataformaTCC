@@ -8,14 +8,15 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import javax.servlet.FilterChain;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
+import java.util.*;
 
 public class JWTAutenticarFilter extends UsernamePasswordAuthenticationFilter {
 
@@ -55,8 +56,13 @@ public class JWTAutenticarFilter extends UsernamePasswordAuthenticationFilter {
 
         UserDetailsPrincipal usuarioData = (UserDetailsPrincipal) authResult.getPrincipal();
 
+        Boolean isAdmin = usuarioData.getAuthorities().stream().anyMatch(ga -> ga.getAuthority().equals("ROLE_ADMIN"));
+        Boolean isInstituicao = usuarioData.getAuthorities().stream().anyMatch(ga -> ga.getAuthority().equals("ROLE_INSTITUICAO"));
+
         String token = JWT.create().
                 withSubject(usuarioData.getUsername())
+                .withClaim("isAdmin", isAdmin)
+                .withClaim("isInstituicao", isInstituicao)
                 .withExpiresAt(new Date(System.currentTimeMillis() + TOKEN_EXPIRACAO))
                 .sign(Algorithm.HMAC512(TOKEN_SENHA));
 

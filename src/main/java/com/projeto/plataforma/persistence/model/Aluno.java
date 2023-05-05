@@ -1,5 +1,6 @@
 package com.projeto.plataforma.persistence.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -46,22 +47,9 @@ public class Aluno extends Usuario {
     @JsonIgnore
     private List<Tema> temasAluno;
 
-    @ManyToMany(cascade = CascadeType.MERGE)
-    @JoinTable(
-            name = "alunoCandidaturas",
-            joinColumns = @JoinColumn(name = "alunoId"),
-            inverseJoinColumns = @JoinColumn(name = "temaId"))
-    @Cascade(value = org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
+    @ManyToMany(mappedBy = "candidatosTema")
     @LazyCollection(LazyCollectionOption.FALSE)
+    @JsonBackReference
     private List<Tema> candidaturasAluno;
 
-    public void setCandidaturasAluno(List<Tema> candidaturasAluno) {
-        this.candidaturasAluno = candidaturasAluno;
-    }
-
-    public void setCandidaturasAluno(Tema tema) {
-        List<Tema> temas = this.candidaturasAluno;
-        temas.add(tema);
-        this.candidaturasAluno = temas;
-    }
 }

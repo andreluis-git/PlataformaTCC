@@ -1,20 +1,16 @@
 package com.projeto.plataforma.persistence.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 @Getter
 @Setter
@@ -36,12 +32,12 @@ public class Tema {
     private Boolean ativo = true;
     @NotNull
     private String dataCriacao;
-    @ManyToMany(cascade = CascadeType.MERGE)
+    @ManyToMany(cascade = {CascadeType.MERGE})
     @JoinTable(
         name = "temaDisciplina",
         joinColumns = @JoinColumn(name = "temaId"),
         inverseJoinColumns = @JoinColumn(name = "disciplinaId"))
-    @Cascade(value = org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
+//    @Cascade(value = org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
 //    @ToString.Exclude
 //    @NotNull
     @LazyCollection(LazyCollectionOption.FALSE)
@@ -54,10 +50,25 @@ public class Tema {
     @NotNull
     @JsonBackReference
     private Curso cursoTema;
-    @ManyToMany(mappedBy = "candidaturasAluno", cascade = CascadeType.MERGE)
-    @Cascade(value = org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
+    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.REMOVE, CascadeType.PERSIST})
+    @JoinTable(
+            name = "temaCandidatos",
+            joinColumns = @JoinColumn(name = "alunoId"),
+            inverseJoinColumns = @JoinColumn(name = "temaId"))
+//    @Cascade(value = org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
     @LazyCollection(LazyCollectionOption.FALSE)
-    @JsonBackReference
     private List<Aluno> candidatosTema;
+
+    public void adicionarCandidatoTema(Aluno aluno) {
+        List<Aluno> alunos = this.candidatosTema;
+        alunos.add(aluno);
+        this.candidatosTema = alunos;
+    }
+
+    public void removerCandidatoTema(Aluno aluno) {
+        List<Aluno> alunos = this.candidatosTema;
+        alunos.removeIf(e -> e.getId().equals(aluno.getId()));
+        this.candidatosTema = alunos;
+    }
 
 }

@@ -17,9 +17,9 @@ public interface TemaRepository extends JpaRepository <Tema, Long> {
     List<Tema> findAllByCriadorTemaIdAndTituloOrderByIdDesc(Long id, String titulo);
     List<Tema> findAllByDisciplinasRelacionadasIdInOrderByIdDesc(List<Long> ids);
     @Transactional
-    @Query(value="SELECT * FROM (select DISTINCT t.* from tema t JOIN tema_disciplina td ON td.tema_id = t.id WHERE td.disciplina_id IN (:ids) AND t.criador_tema_id != :criadorId ORDER BY id DESC) tb1\n" +
+    @Query(value="SELECT * FROM (select DISTINCT t.* from tema t JOIN tema_disciplina td ON td.tema_id = t.id WHERE td.disciplina_id IN (:ids) AND t.criador_tema_id != :criadorId AND t.ativo = true ORDER BY id DESC) tb1\n" +
             "UNION ALL\n" +
-            "SELECT * FROM (select DISTINCT t.* from tema t JOIN tema_disciplina td ON td.tema_id = t.id WHERE td.disciplina_id NOT IN (:ids) AND t.criador_tema_id != :criadorId ORDER BY id DESC) tb2\n", nativeQuery = true)
+            "SELECT * FROM (select DISTINCT t.* from tema t JOIN tema_disciplina td ON td.tema_id = t.id WHERE td.disciplina_id NOT IN (:ids) AND t.criador_tema_id != :criadorId AND t.ativo = true ORDER BY id DESC) tb2\n", nativeQuery = true)
     List<Tema> findAllTemasQuery(@Param("ids") List<Long> ids, @Param("criadorId") Long id);
     List<Tema> findByCriadorTemaId(Long id);
     List<Aluno> findAllCandidatosTemaById(Long temaId);
