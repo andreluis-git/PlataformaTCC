@@ -34,7 +34,7 @@ public class Disciplina {
     @JsonBackReference
     private Set<Tema> temasDisciplina;
 
-    @ManyToMany(mappedBy = "disciplinasInteresse", cascade = {CascadeType.MERGE})
+    @ManyToMany(mappedBy = "disciplinasInteresse", cascade = {CascadeType.ALL})
     @LazyCollection(LazyCollectionOption.FALSE)
     @JsonBackReference
     private Set<Aluno> alunosDisciplina;

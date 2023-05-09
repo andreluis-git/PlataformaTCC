@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.Entity;
+import javax.validation.constraints.NotEmpty;
 import java.util.List;
 
 @Data
@@ -14,7 +15,9 @@ import java.util.List;
 @AllArgsConstructor
 public class CursoDTO {
     private Long id;
+    @NotEmpty(message = "Campo nome obrigatório.")
     private String nome;
+    @NotEmpty(message = "Campo sigla obrigatório.")
     private String sigla;
     private InstituicaoDTO instituicaoCurso;
     private List<DisciplinaDTO> disciplinasCurso;

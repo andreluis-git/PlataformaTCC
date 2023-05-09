@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -19,6 +21,7 @@ import java.util.Set;
 @Entity(name="Instituicao")
 public class Instituicao extends Usuario {
     @OneToMany(mappedBy = "instituicaoCurso", cascade = CascadeType.MERGE, orphanRemoval = true)
+    @LazyCollection(LazyCollectionOption.FALSE)
     @JsonIgnore
     @JsonManagedReference
     List<Curso> cursosInstituicao;

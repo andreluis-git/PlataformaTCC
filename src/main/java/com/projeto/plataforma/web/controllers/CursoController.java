@@ -1,7 +1,9 @@
 package com.projeto.plataforma.web.controllers;
 
 import com.projeto.plataforma.persistence.dao.CursoRepository;
+import com.projeto.plataforma.persistence.dao.InstituicaoRepository;
 import com.projeto.plataforma.persistence.model.Curso;
+import com.projeto.plataforma.persistence.model.Instituicao;
 import com.projeto.plataforma.persistence.model.Usuario;
 import com.projeto.plataforma.web.dto.CursoDTO;
 import com.projeto.plataforma.web.util.CurrentUser;
@@ -12,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,7 +23,8 @@ import java.util.Optional;
 public class CursoController {
     @Autowired
     private CursoRepository cursoRepository;
-
+    @Autowired
+    private InstituicaoRepository instituicaoRepository;
     @Autowired
     private CurrentUser currentUser;
 
@@ -46,16 +50,25 @@ public class CursoController {
         return ResponseEntity.ok(cursos);
     }
 
+    @GetMapping("/listarCursosPorInstituicaoAndNome")
+    public ResponseEntity<Object> listarCursosPorInstituicaoAndNome(@RequestHeader HttpHeaders headers, @RequestParam String nome) {
+        Usuario user = currentUser.getCurrentUser(headers);
+        List<Curso> cursos = cursoRepository.findAllByInstituicaoCursoIdAndNomeContainsIgnoreCaseOrderByNomeAsc(user.getId(), nome);
+        return ResponseEntity.ok(cursos);
+    }
+
     @PostMapping(value = "/cadastrarCurso", consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_INSTITUICAO')")
-    public ResponseEntity<Object> cadastrarCurso(@RequestBody CursoDTO cursoDTO) {
+    public ResponseEntity<Object> cadastrarCurso(@RequestHeader HttpHeaders headers, @Valid @RequestBody CursoDTO cursoDTO) {
         try {
+            Instituicao instituicao = instituicaoRepository.findById(currentUser.getCurrentUser(headers).getId()).get();
             Curso curso = new Curso();
             curso.setNome(cursoDTO.getNome());
             curso.setSigla(cursoDTO.getSigla());
-            cursoRepository.save(curso);
+            curso.setInstituicaoCurso(instituicao);
+            curso = cursoRepository.save(curso);
 
-            return ResponseEntity.ok().build();
+            return ResponseEntity.ok(curso);
         }
         catch (Exception ex) {
             return ResponseEntity.badRequest().build();
@@ -83,11 +96,15 @@ public class CursoController {
         }
     }
 
-    @DeleteMapping("/deletarCurso")
+    @DeleteMapping("/deletarCurso/{cursoId}")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_INSTITUICAO')")
-    public ResponseEntity<Object> deletarCurso(@RequestParam Long cursoId) {
-        cursoRepository.deleteById(cursoId);
+    public ResponseEntity<Object> deletarCurso(@PathVariable Long cursoId) {
+        try {
+            cursoRepository.deleteById(cursoId);
 
-        return  ResponseEntity.ok().build();
+            return  ResponseEntity.ok().build();
+        } catch(Exception ex) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 }

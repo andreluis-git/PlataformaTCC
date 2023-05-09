@@ -37,7 +37,7 @@ public class Curso {
     @JsonIgnore
     private List<Disciplina> disciplinasCurso;
 
-    @OneToMany(mappedBy = "cursoAluno", cascade = CascadeType.MERGE, orphanRemoval = true)
+    @OneToMany(mappedBy = "cursoAluno", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private List<Aluno> alunosCurso;
 

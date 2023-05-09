@@ -10,6 +10,8 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class InstituicaoDTO {
-    List<Curso> cursosInstituicao;
+public class InstituicaoDTO extends UsuarioDTO {
+    private String senhaAtual;
+    private String senhaNova;
+    private List<Curso> cursosInstituicao;
 }

@@ -171,6 +171,9 @@ public class TemaController {
             Tema tema = new Tema();
             tema.setTitulo(temaDTO.getTitulo());
             tema.setDescricao(temaDTO.getDescricao());
+            if(temaDTO.getDisciplinasRelacionadas().isEmpty()) {
+                temaDTO.setDisciplinasRelacionadas(new ArrayList<>());
+            }
             List<Long> disciplinaIds = temaDTO.getDisciplinasRelacionadas().stream().map(DisciplinaDTO::getId).collect(Collectors.toList());
             Set<Disciplina> disciplinasRelacionadas = disciplinaRepository.findAllByIdIn(disciplinaIds);
             tema.setDisciplinasRelacionadas(disciplinasRelacionadas);

@@ -4,7 +4,6 @@ import com.projeto.plataforma.persistence.dao.AlunoRepository;
 import com.projeto.plataforma.persistence.dao.DisciplinaRepository;
 import com.projeto.plataforma.persistence.model.Aluno;
 import com.projeto.plataforma.persistence.model.Disciplina;
-import com.projeto.plataforma.persistence.model.Tema;
 import com.projeto.plataforma.persistence.model.Usuario;
 import com.projeto.plataforma.web.dto.AlunoDTO;
 import com.projeto.plataforma.web.dto.DisciplinaDTO;
@@ -55,6 +54,32 @@ public class AlunoController {
             Aluno aluno = alunoRepository.findById(user.getId()).get();
 
             return ResponseEntity.ok(aluno);
+        }
+        catch (Exception ex) {
+            return ResponseEntity.badRequest().body(ex.getCause());
+        }
+    }
+
+    @GetMapping("/buscarAlunosPorInstituicaoId")
+    public ResponseEntity<Object> buscarAlunosPorInstituicaoId(@RequestHeader HttpHeaders headers) {
+        try {
+            Usuario user = currentUser.getCurrentUser(headers);
+            List<Aluno> alunos = alunoRepository.findAlunosByInstituicaoIdQuery(user.getId());
+
+            return ResponseEntity.ok(alunos);
+        }
+        catch (Exception ex) {
+            return ResponseEntity.badRequest().body(ex.getCause());
+        }
+    }
+
+    @GetMapping("/buscarAlunosPorInstituicaoIdAndEmail")
+    public ResponseEntity<Object> buscarAlunosPorInstituicaoIdAndEmail(@RequestHeader HttpHeaders headers, @RequestParam String texto) {
+        try {
+            Usuario user = currentUser.getCurrentUser(headers);
+            List<Aluno> alunos = alunoRepository.findAlunosByInstituicaoIdAndEmailQuery(user.getId(), texto);
+
+            return ResponseEntity.ok(alunos);
         }
         catch (Exception ex) {
             return ResponseEntity.badRequest().body(ex.getCause());

@@ -2,14 +2,19 @@ package com.projeto.plataforma.web.controllers;
 
 import com.projeto.plataforma.persistence.dao.*;
 import com.projeto.plataforma.persistence.model.*;
+import com.projeto.plataforma.web.dto.InstituicaoDTO;
+import com.projeto.plataforma.web.util.CurrentUser;
 import org.apache.catalina.LifecycleState;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,20 +31,26 @@ public class InstituicaoController {
     @Autowired
     private AlunoRepository alunoRepository;
     @Autowired
+    private RoleRepository roleRepository;
+    @Autowired
     private TemaRepository temaRepository;
     @Autowired
     private PasswordEncoder encoder;
 
-    @GetMapping("/buscarInstituicao")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<Object> buscarInstituicaoPorId(@RequestParam Long id) {
+    @Autowired
+    private CurrentUser currentUser;
 
+    @GetMapping("/buscarInstituicao")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_INSTITUICAO')")
+    public ResponseEntity<Object> buscarInstituicao(@RequestHeader HttpHeaders headers) {
         try {
-            Instituicao instituicao = instituicaoRepository.findById(id).get();
+            Usuario user = currentUser.getCurrentUser(headers);
+            Instituicao instituicao = instituicaoRepository.findById(user.getId()).get();
+
             return ResponseEntity.ok(instituicao);
         }
-        catch (Exception ex){
-            return ResponseEntity.badRequest().build();
+        catch (Exception ex) {
+            return ResponseEntity.badRequest().body(ex.getCause());
         }
     }
 
@@ -69,10 +80,15 @@ public class InstituicaoController {
 
     @PostMapping(value = "/cadastrarInstituicao", consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<Object> cadastrarInstituicao(@RequestBody Instituicao instituicao) {
+    public ResponseEntity<Object> cadastrarInstituicao(@RequestBody InstituicaoDTO instituicaoDTO) {
 
         try {
-            instituicao.setPassword(encoder.encode(instituicao.getPassword()));
+            Instituicao instituicao = new Instituicao();
+            instituicao.setNome(instituicaoDTO.getNome());
+            instituicao.setPassword(encoder.encode(instituicaoDTO.getPassword()));
+            instituicao.setEmail(instituicaoDTO.getEmail());
+            instituicao.setRoles(new HashSet<>(Arrays.asList(roleRepository.findByName("ROLE_INSTITUICAO"))));
+            instituicao.setAtivo(true);
             return ResponseEntity.ok(instituicaoRepository.save(instituicao));
         }
         catch (Exception ex){
@@ -81,14 +97,27 @@ public class InstituicaoController {
     }
 
     @PutMapping(value = "/editarInstituicao", consumes = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
-    public ResponseEntity<Object> editarInstituicao(@RequestBody Instituicao instituicao) {
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_INSTITUICAO')")
+    public ResponseEntity<Object> editarInstituicao(@RequestBody InstituicaoDTO instituicaoDTO) {
         try {
-            Optional<Instituicao> optionalInstituicao = instituicaoRepository.findById(instituicao.getId());
+            Optional<Instituicao> optionalInstituicao = instituicaoRepository.findById(instituicaoDTO.getId());
             if(!optionalInstituicao.isPresent()) {
                 return ResponseEntity.badRequest().build();
             }
-            instituicaoRepository.save(instituicao);
+
+            Instituicao instituicaoBanco = optionalInstituicao.get();
+            if(!instituicaoDTO.getNome().isEmpty()) {
+                instituicaoBanco.setNome(instituicaoDTO.getNome());
+            }
+
+            if(!instituicaoDTO.getSenhaAtual().isEmpty()
+                    && !instituicaoDTO.getSenhaNova().isEmpty()
+                    && encoder.matches(instituicaoDTO.getSenhaAtual(), instituicaoBanco.getPassword())
+            ) {
+                instituicaoBanco.setPassword(encoder.encode(instituicaoDTO.getSenhaNova()));
+            }
+
+            instituicaoRepository.save(instituicaoBanco);
 
             return ResponseEntity.ok().build();
         }
