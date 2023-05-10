@@ -17,7 +17,7 @@ public interface AlunoRepository extends JpaRepository<Aluno, Long> {
     Aluno findAlunoQuery(@Param("id") Long id);
 
     @Query(value = "select * from usuario u \n" +
-            "JOIN curso c on c.id = u.curso_aluno_id and c.instituicao_curso_id = :id", nativeQuery = true)
+            "JOIN curso c on c.id = u.curso_aluno_id and c.instituicao_curso_id = :id ORDER BY u.nome ASC", nativeQuery = true)
     List<Aluno> findAlunosByInstituicaoIdQuery(@Param("id") Long id);
 
     @Query(value = "select * from usuario u \n" +

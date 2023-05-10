@@ -1,8 +1,10 @@
 package com.projeto.plataforma.web.controllers;
 
 import com.projeto.plataforma.persistence.dao.AlunoRepository;
+import com.projeto.plataforma.persistence.dao.CursoRepository;
 import com.projeto.plataforma.persistence.dao.DisciplinaRepository;
 import com.projeto.plataforma.persistence.model.Aluno;
+import com.projeto.plataforma.persistence.model.Curso;
 import com.projeto.plataforma.persistence.model.Disciplina;
 import com.projeto.plataforma.persistence.model.Usuario;
 import com.projeto.plataforma.web.dto.AlunoDTO;
@@ -28,6 +30,8 @@ public class AlunoController {
 
     @Autowired
     private AlunoRepository alunoRepository;
+    @Autowired
+    private CursoRepository cursoRepository;
     @Autowired
     private DisciplinaRepository disciplinaRepository;
     @Autowired
@@ -110,12 +114,46 @@ public class AlunoController {
 
             List<Long> disciplinaIds = alunoDTO.getDisciplinasInteresse().stream().map(DisciplinaDTO::getId).collect(Collectors.toList());
             Set<Disciplina> disciplinasInteresse = disciplinaRepository.findAllByIdIn(disciplinaIds);
+            if(!alunoDTO.getNome().isEmpty()) {
+                alunoDb.setNome(alunoDTO.getNome());
+            }
             alunoDb.setDisciplinasInteresse(disciplinasInteresse);
             alunoDb.setSobre(alunoDTO.getSobre());
             alunoDb.setLinkedin(alunoDTO.getLinkedin());
             alunoDb.setInstagram(alunoDTO.getInstagram());
             alunoDb.setFacebook(alunoDTO.getFacebook());
             alunoDb.setWhatsapp(alunoDTO.getWhatsapp());
+
+            alunoRepository.save(alunoDb);
+
+            return ResponseEntity.ok().build();
+        }
+        catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Erro: " + ex.getMessage().toString());
+        }
+    }
+
+    @PutMapping(value = "/editarAlunoInstituicao", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_INSTITUICAO')")
+    public ResponseEntity<Object> editarAlunoInstituicao(@RequestHeader HttpHeaders headers, @RequestBody AlunoDTO alunoDTO) {
+        try {
+            Optional<Aluno> optAluno = alunoRepository.findById(alunoDTO.getId());
+            if(optAluno.isEmpty()) {
+                return ResponseEntity.badRequest().build();
+            }
+
+            Aluno alunoDb = optAluno.get();
+
+            if(!alunoDTO.getNome().isEmpty()) {
+                alunoDb.setNome(alunoDTO.getNome());
+            }
+            if(!alunoDTO.getEmail().isEmpty()) {
+                alunoDb.setEmail(alunoDTO.getEmail());
+            }
+
+            Curso curso = cursoRepository.findById(alunoDTO.getCursoAluno().getId()).get();
+
+            alunoDb.setCursoAluno(curso);
 
             alunoRepository.save(alunoDb);
 
