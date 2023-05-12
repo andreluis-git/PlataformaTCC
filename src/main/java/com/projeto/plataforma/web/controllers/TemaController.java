@@ -97,7 +97,7 @@ public class TemaController {
 
             List<Long> disciplinaIds = aluno.getDisciplinasInteresse().stream().map(Disciplina::getId).collect(Collectors.toList());
 
-            List<Tema> temas = temaRepository.findAllTemasQuery(disciplinaIds, aluno.getId());
+            List<Tema> temas = temaRepository.findAllTemasQuery(disciplinaIds, aluno.getId(), aluno.getCursoAluno().getId());
 
             return ResponseEntity.ok(temas);
         }
