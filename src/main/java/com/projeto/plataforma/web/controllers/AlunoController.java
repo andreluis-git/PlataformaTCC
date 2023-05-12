@@ -91,8 +91,24 @@ public class AlunoController {
     }
 
     @PostMapping(value = "/cadastrarAluno", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Object> cadastrarAluno(@RequestBody Aluno aluno) {
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_INSTITUICAO')")
+    public ResponseEntity<Object> cadastrarAluno(@RequestBody AlunoDTO alunoDTO) {
 
+        try {
+            Aluno aluno = new Aluno();
+            aluno.setNome(alunoDTO.getNome());
+            aluno.setEmail(alunoDTO.getEmail());
+            aluno.setCursoAluno(cursoRepository.findById(alunoDTO.getCursoAluno().getId()).get());
+            aluno.setPassword(encoder.encode(aluno.getEmail()));
+            return ResponseEntity.ok(alunoRepository.save(aluno));
+        }
+        catch (Exception ex){
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @PostMapping(value = "/cadastrarAlunoApi", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Object> cadastrarAlunoApi(@RequestBody Aluno aluno) {
         try {
             aluno.setPassword(encoder.encode(aluno.getPassword()));
             return ResponseEntity.ok(alunoRepository.save(aluno));
