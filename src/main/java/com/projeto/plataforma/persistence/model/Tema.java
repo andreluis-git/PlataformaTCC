@@ -51,8 +51,8 @@ public class Tema {
     @ManyToMany(cascade = {CascadeType.MERGE})
     @JoinTable(
             name = "temaCandidatos",
-            joinColumns = @JoinColumn(name = "alunoId"),
-            inverseJoinColumns = @JoinColumn(name = "temaId"))
+            joinColumns = @JoinColumn(name = "temaId"),
+            inverseJoinColumns = @JoinColumn(name = "alunoId"))
     @LazyCollection(LazyCollectionOption.FALSE)
     private Set<Aluno> candidatosTema;
 

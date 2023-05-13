@@ -25,6 +25,6 @@ public interface AlunoRepository extends JpaRepository<Aluno, Long> {
             "where (u.email LIKE CONCAT('%',:texto,'%'))", nativeQuery = true)
     List<Aluno> findAlunosByInstituicaoIdAndEmailQuery(@Param("id") Long id, @Param("texto") String texto);
 
-    List<Aluno> findAllByCandidaturasAlunoId(Long id);
+    List<Aluno> findAllByCandidaturasAlunoIdAndAtivo(Long id, boolean ativo);
 
 }

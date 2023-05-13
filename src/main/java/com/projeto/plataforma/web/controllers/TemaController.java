@@ -115,6 +115,15 @@ public class TemaController {
             Aluno aluno = alunoRepository.findById(user.getId()).get();
 
             List<Tema> temas = temaRepository.findAllByCriadorTemaIdOrderByIdDesc(aluno.getId());
+            for (Tema tema: temas) {
+                Set<Aluno> alunos = tema.getCandidatosTema();
+                List<Aluno> alunosRemover = new ArrayList<>();
+                for (Aluno alunoFor: alunos) {
+                    if(!alunoFor.isEnabled())
+                        alunosRemover.add(alunoFor);
+                }
+                tema.getCandidatosTema().removeAll(alunosRemover);
+            }
 
             return ResponseEntity.ok(temas);
         }
@@ -297,7 +306,7 @@ public class TemaController {
     public ResponseEntity<Object> listarCandidatosTema(@RequestParam Long temaId) {
 
         try {
-            List<Aluno> candidatos = alunoRepository.findAllByCandidaturasAlunoId(temaId);
+            List<Aluno> candidatos = alunoRepository.findAllByCandidaturasAlunoIdAndAtivo(temaId, true);
 
             return ResponseEntity.ok(candidatos);
         }
