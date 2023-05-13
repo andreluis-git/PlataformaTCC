@@ -11,7 +11,5 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class InstituicaoDTO extends UsuarioDTO {
-    private String senhaAtual = "";
-    private String senhaNova = "";
     private List<Curso> cursosInstituicao;
 }

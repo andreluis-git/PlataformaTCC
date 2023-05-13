@@ -17,4 +17,6 @@ public class UsuarioDTO {
     private String password;
     private boolean ativo;
     private Collection<RoleDTO> roles;
+    private String senhaAtual = "";
+    private String senhaNova = "";
 }

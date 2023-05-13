@@ -139,6 +139,13 @@ public class AlunoController {
             alunoDb.setFacebook(alunoDTO.getFacebook());
             alunoDb.setWhatsapp(alunoDTO.getWhatsapp());
 
+            if(!alunoDTO.getSenhaAtual().isEmpty()
+                    && !alunoDTO.getSenhaNova().isEmpty()
+                    && encoder.matches(alunoDTO.getSenhaAtual(), alunoDb.getPassword())
+            ) {
+                alunoDb.setPassword(encoder.encode(alunoDTO.getSenhaNova()));
+            }
+
             alunoRepository.save(alunoDb);
 
             return ResponseEntity.ok().build();
