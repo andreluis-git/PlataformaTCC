@@ -3,10 +3,8 @@ package com.projeto.plataforma.web.controllers;
 import com.projeto.plataforma.persistence.dao.AlunoRepository;
 import com.projeto.plataforma.persistence.dao.CursoRepository;
 import com.projeto.plataforma.persistence.dao.DisciplinaRepository;
-import com.projeto.plataforma.persistence.model.Aluno;
-import com.projeto.plataforma.persistence.model.Curso;
-import com.projeto.plataforma.persistence.model.Disciplina;
-import com.projeto.plataforma.persistence.model.Usuario;
+import com.projeto.plataforma.persistence.dao.TemaRepository;
+import com.projeto.plataforma.persistence.model.*;
 import com.projeto.plataforma.web.dto.AlunoDTO;
 import com.projeto.plataforma.web.dto.DisciplinaDTO;
 import com.projeto.plataforma.web.util.CurrentUser;
@@ -19,9 +17,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
@@ -30,6 +26,8 @@ public class AlunoController {
 
     @Autowired
     private AlunoRepository alunoRepository;
+    @Autowired
+    private TemaRepository temaRepository;
     @Autowired
     private CursoRepository cursoRepository;
     @Autowired
@@ -180,11 +178,47 @@ public class AlunoController {
         }
     }
 
-    @DeleteMapping("/deletarCurso")
+    @PutMapping("/alterarStatusAluno")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_INSTITUICAO')")
-    public ResponseEntity<Object> deletarCurso(@RequestParam Long alunoId) {
+    public ResponseEntity<Object> alterarStatusAluno(@RequestParam Long alunoId) {
+        Aluno aluno = alunoRepository.findById(alunoId).get();
+        aluno.setAtivo(!aluno.isEnabled());
+        alunoRepository.save(aluno);
+
+        return  ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/deletarAluno/{alunoId}")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_INSTITUICAO')")
+    public ResponseEntity<Object> deletarAluno(@PathVariable Long alunoId) {
+        try {
+
+        Aluno aluno = alunoRepository.findById(alunoId).get();
+        aluno.setDisciplinasInteresse(new HashSet<>());
+        List<Tema> temas = aluno.getTemasAluno();
+
+        for (Tema tema: temas) {
+            tema.setCandidatosTema(new HashSet<>());
+            tema.setDisciplinasRelacionadas(new HashSet<>());
+            temaRepository.save(tema);
+
+            temaRepository.deleteById(tema.getId());
+        }
+
+        Set<Tema> candidaturas = aluno.getCandidaturasAluno();
+
+        for (Tema tema: candidaturas) {
+            tema.removerCandidatoTema(aluno);
+            temaRepository.save(tema);
+        }
+
+        alunoRepository.save(aluno);
+
         alunoRepository.deleteById(alunoId);
 
         return  ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return  ResponseEntity.ok().build();
+        }
     }
 }

@@ -56,6 +56,8 @@ public class JWTAutenticarFilter extends UsernamePasswordAuthenticationFilter {
 
         UserDetailsPrincipal usuarioData = (UserDetailsPrincipal) authResult.getPrincipal();
 
+        boolean teste = usuarioData.isEnabled();
+
         Boolean isAdmin = usuarioData.getAuthorities().stream().anyMatch(ga -> ga.getAuthority().equals("ROLE_ADMIN"));
         Boolean isInstituicao = usuarioData.getAuthorities().stream().anyMatch(ga -> ga.getAuthority().equals("ROLE_INSTITUICAO"));
 
