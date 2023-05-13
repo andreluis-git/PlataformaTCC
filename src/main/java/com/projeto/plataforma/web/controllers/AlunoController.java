@@ -1,9 +1,6 @@
 package com.projeto.plataforma.web.controllers;
 
-import com.projeto.plataforma.persistence.dao.AlunoRepository;
-import com.projeto.plataforma.persistence.dao.CursoRepository;
-import com.projeto.plataforma.persistence.dao.DisciplinaRepository;
-import com.projeto.plataforma.persistence.dao.TemaRepository;
+import com.projeto.plataforma.persistence.dao.*;
 import com.projeto.plataforma.persistence.model.*;
 import com.projeto.plataforma.web.dto.AlunoDTO;
 import com.projeto.plataforma.web.dto.DisciplinaDTO;
@@ -32,6 +29,8 @@ public class AlunoController {
     private CursoRepository cursoRepository;
     @Autowired
     private DisciplinaRepository disciplinaRepository;
+    @Autowired
+    private RoleRepository roleRepository;
     @Autowired
     private PasswordEncoder encoder;
 
@@ -99,6 +98,7 @@ public class AlunoController {
             aluno.setCursoAluno(cursoRepository.findById(alunoDTO.getCursoAluno().getId()).get());
             aluno.setPassword(encoder.encode(aluno.getEmail()));
             aluno.setAtivo(true);
+            aluno.setRoles(new HashSet<>(Arrays.asList(roleRepository.findByName("ROLE_USER"))));
             return ResponseEntity.ok(alunoRepository.save(aluno));
         }
         catch (Exception ex){
