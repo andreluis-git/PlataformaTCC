@@ -44,7 +44,7 @@ public class AlunoController {
         return ResponseEntity.ok(alunoRepository.findById(id).get());
     }
 
-    @GetMapping("/buscarAlunoPorNome/{id}")
+    @GetMapping("/buscarAlunoPorNome/{email}")
     public ResponseEntity<Object> buscarAlunoPorEmail(@PathVariable String email) {
         return ResponseEntity.ok(alunoRepository.findByEmail(email).get());
     }
@@ -98,6 +98,7 @@ public class AlunoController {
             aluno.setEmail(alunoDTO.getEmail());
             aluno.setCursoAluno(cursoRepository.findById(alunoDTO.getCursoAluno().getId()).get());
             aluno.setPassword(encoder.encode(aluno.getEmail()));
+            aluno.setAtivo(true);
             return ResponseEntity.ok(alunoRepository.save(aluno));
         }
         catch (Exception ex){

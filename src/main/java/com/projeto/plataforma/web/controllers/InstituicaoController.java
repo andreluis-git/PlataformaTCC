@@ -4,7 +4,6 @@ import com.projeto.plataforma.persistence.dao.*;
 import com.projeto.plataforma.persistence.model.*;
 import com.projeto.plataforma.web.dto.InstituicaoDTO;
 import com.projeto.plataforma.web.util.CurrentUser;
-import org.apache.catalina.LifecycleState;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -15,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -59,7 +57,19 @@ public class InstituicaoController {
     public ResponseEntity<Object> buscarInstituicaoPorNome(@RequestParam String nome) {
 
         try {
-            return ResponseEntity.ok(instituicaoRepository.findByNome(nome).get());
+            return ResponseEntity.ok(instituicaoRepository.findByNomeContainsIgnoreCaseOrderByNomeAsc(nome));
+        }
+        catch (Exception ex){
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @GetMapping("/buscarInstituicaoPorId/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<Object> buscarInstituicaoPorId(@PathVariable Long id) {
+
+        try {
+            return ResponseEntity.ok(instituicaoRepository.findById(id).get());
         }
         catch (Exception ex){
             return ResponseEntity.badRequest().build();
@@ -69,9 +79,8 @@ public class InstituicaoController {
     @GetMapping("/listarInstituicoes")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<Object> listarInstituicoes() {
-
         try {
-            return ResponseEntity.ok(instituicaoRepository.findAll());
+            return ResponseEntity.ok(instituicaoRepository.findAllByOrderByNomeAsc());
         }
         catch (Exception ex){
             return ResponseEntity.badRequest().build();
@@ -85,7 +94,7 @@ public class InstituicaoController {
         try {
             Instituicao instituicao = new Instituicao();
             instituicao.setNome(instituicaoDTO.getNome());
-            instituicao.setPassword(encoder.encode(instituicaoDTO.getPassword()));
+            instituicao.setPassword(encoder.encode(instituicaoDTO.getEmail()));
             instituicao.setEmail(instituicaoDTO.getEmail());
             instituicao.setRoles(new HashSet<>(Arrays.asList(roleRepository.findByName("ROLE_INSTITUICAO"))));
             instituicao.setAtivo(true);
