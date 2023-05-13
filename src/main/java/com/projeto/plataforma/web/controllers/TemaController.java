@@ -190,7 +190,7 @@ public class TemaController {
             tema.setCriadorTema(aluno);
 
             Date date = Calendar.getInstance().getTime();
-            DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd HH:mm:ss");
+            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             String strDate = dateFormat.format(date);
 
             tema.setDataCriacao(strDate);
