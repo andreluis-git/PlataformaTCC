@@ -63,6 +63,7 @@ public class JWTAutenticarFilter extends UsernamePasswordAuthenticationFilter {
 
         String token = JWT.create().
                 withSubject(usuarioData.getUsername())
+                .withClaim("userId", usuarioData.getUsuario().getId())
                 .withClaim("isAdmin", isAdmin)
                 .withClaim("isInstituicao", isInstituicao)
                 .withExpiresAt(new Date(System.currentTimeMillis() + TOKEN_EXPIRACAO))

@@ -16,6 +16,10 @@ public class UserDetailsPrincipal implements UserDetails {
         this.usuario = usuario;
     }
 
+    public Usuario getUsuario() {
+        return usuario.orElse(new Usuario());
+    }
+
     @Override
     public String getPassword() {
         return usuario.orElse(new Usuario()).getPassword();
