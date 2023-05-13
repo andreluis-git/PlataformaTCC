@@ -135,12 +135,16 @@ public class InstituicaoController {
         }
     }
 
-    @DeleteMapping("/deletarInstituicao")
+    @DeleteMapping("/deletarInstituicao/{instituicaoId}")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
-    public ResponseEntity<Object> deletarInstituicao(@RequestParam Long instituicaoId) {
+    public ResponseEntity<Object> deletarInstituicao(@PathVariable Long instituicaoId) {
+        try{
+            instituicaoRepository.deleteById(instituicaoId);
 
-        instituicaoRepository.deleteById(instituicaoId);
-
-        return  ResponseEntity.ok().build();
+            return  ResponseEntity.ok().build();
+        }
+        catch (Exception ex) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 }
