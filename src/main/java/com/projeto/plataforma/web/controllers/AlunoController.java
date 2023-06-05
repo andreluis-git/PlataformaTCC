@@ -121,7 +121,7 @@ public class AlunoController {
     public ResponseEntity<Object> editarAluno(@RequestHeader HttpHeaders headers, @RequestBody AlunoDTO alunoDTO) {
         try {
             Optional<Aluno> optAluno = alunoRepository.findById(alunoDTO.getId());
-            if(optAluno.isEmpty()) {
+            if(!optAluno.isPresent()) {
                 return ResponseEntity.badRequest().build();
             }
 
@@ -160,7 +160,7 @@ public class AlunoController {
     public ResponseEntity<Object> editarAlunoInstituicao(@RequestHeader HttpHeaders headers, @RequestBody AlunoDTO alunoDTO) {
         try {
             Optional<Aluno> optAluno = alunoRepository.findById(alunoDTO.getId());
-            if(optAluno.isEmpty()) {
+            if(!optAluno.isPresent()) {
                 return ResponseEntity.badRequest().build();
             }
 

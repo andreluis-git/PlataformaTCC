@@ -80,7 +80,7 @@ public class CursoController {
     public ResponseEntity<Object> editarCurso(@RequestBody Curso curso) {
         try {
             Optional<Curso> optCurso = cursoRepository.findById(curso.getId());
-            if(optCurso.isEmpty()) {
+            if(!optCurso.isPresent()) {
                 return ResponseEntity.badRequest().build();
             }
             Curso cursoDb = optCurso.get();
