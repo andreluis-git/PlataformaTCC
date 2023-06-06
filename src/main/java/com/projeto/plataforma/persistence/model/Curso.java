@@ -6,6 +6,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -34,14 +36,17 @@ public class Curso {
     private Instituicao instituicaoCurso;
 
     @OneToMany(mappedBy = "cursoDisciplina", cascade = CascadeType.MERGE, orphanRemoval = true)
+    @LazyCollection(LazyCollectionOption.FALSE)
     @JsonIgnore
     private List<Disciplina> disciplinasCurso;
 
     @OneToMany(mappedBy = "cursoAluno", cascade = CascadeType.ALL, orphanRemoval = true)
+    @LazyCollection(LazyCollectionOption.FALSE)
     @JsonIgnore
     private List<Aluno> alunosCurso;
 
     @OneToMany(mappedBy = "cursoTema", cascade = CascadeType.MERGE, orphanRemoval = true)
+    @LazyCollection(LazyCollectionOption.FALSE)
     @JsonIgnore
     private List<Tema> temasCurso;
 

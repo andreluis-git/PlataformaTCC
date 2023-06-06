@@ -8,10 +8,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
 import java.util.List;
 import java.util.Set;
 
@@ -20,8 +17,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Entity(name="Instituicao")
 public class Instituicao extends Usuario {
-    @OneToMany(mappedBy = "instituicaoCurso", cascade = CascadeType.ALL, orphanRemoval = true)
-    @LazyCollection(LazyCollectionOption.FALSE)
+    @OneToMany(mappedBy = "instituicaoCurso", cascade = CascadeType.ALL, orphanRemoval = true , fetch = FetchType.LAZY)
     @JsonIgnore
     @JsonManagedReference
     List<Curso> cursosInstituicao;
